@@ -1,0 +1,11 @@
+{
+  "name": "contest-app-api",
+  "scripts": {
+    "restore:tools": "dotnet tool restore",
+    "restore:pkg": "dotnet restore --locked-mode",
+    "restore": "npm run restore:tools && npm run restore:pkg",
+    "check": "dotnet csharpier check .",
+    "start:services:dev": "docker-compose -f docker-compose.dev.yml up services",
+    "start:dev": "dotnet watch --project ./src/Web/Web.csproj"
+  }
+}
