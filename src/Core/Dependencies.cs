@@ -10,7 +10,6 @@ public static class Dependencies
 	{
 		services.AddMediatR(cfg =>
 		{
-			cfg.RegisterGenericHandlers = true;
 			cfg.AddOpenBehavior(typeof(FlushDatabaseContextBehaviour<,>));
 			cfg.RegisterServicesFromAssembly(typeof(Dependencies).Assembly);
 		});

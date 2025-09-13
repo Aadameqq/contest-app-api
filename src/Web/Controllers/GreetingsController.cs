@@ -11,13 +11,13 @@ public class GreetingsController(IMediator mediator) : ControllerBase
 	[HttpGet]
 	public ActionResult<string> Get()
 	{
-		return "test";
+		return NotFound();
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Create()
+	public async Task<IActionResult> Create([FromBody] GreetingsBody body)
 	{
-		var cmd = new CreateGreetingCommand("Hello from ASP.NET Core!");
+		var cmd = new CreateGreetingCommand(body.Content);
 		await mediator.Send(cmd);
 		return Created();
 	}
