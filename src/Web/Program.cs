@@ -7,16 +7,11 @@ builder.SetUpOptions();
 builder.Services.SetUpCore();
 builder.Services.AddControllers();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.SetUpOpenApi();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+app.UseOpenApi();
 
 app.UseHttpsRedirection();
 
