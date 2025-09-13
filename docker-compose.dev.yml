@@ -1,7 +1,4 @@
 services:
-  services:
-    depends_on:
-      - database
   database:
     image: postgres:14
     environment:

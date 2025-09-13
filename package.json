@@ -5,7 +5,10 @@
     "restore:pkg": "dotnet restore --locked-mode",
     "restore": "npm run restore:tools && npm run restore:pkg",
     "check": "dotnet csharpier check .",
-    "start:services:dev": "docker-compose -f docker-compose.dev.yml up services",
-    "start:dev": "dotnet watch --project ./src/Web/Web.csproj"
+    "start:services:dev": "docker-compose -f docker-compose.dev.yml up database",
+    "start:dev": "dotnet watch --project ./src/Web/Web.csproj",
+    "create:migration": "node ./scripts/create-migration.js",
+    "push:migration": "dotnet ef database update --project ./src/Core --startup-project ./src/Web",
+    "remove:migration:dev": "dotnet ef migrations remove --force --project ./src/Core --startup-project ./src/Web"
   }
 }
