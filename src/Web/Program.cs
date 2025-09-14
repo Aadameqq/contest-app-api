@@ -9,6 +9,7 @@ builder.Services.SetUpCore();
 builder.Services.AddControllers();
 
 builder.Services.SetUpOpenApi();
+builder.Services.SetUpAuth();
 
 var app = builder.Build();
 
@@ -17,8 +18,7 @@ app.UseOpenApi();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.MapControllers();
+app.UseAuth();
 
 app.Run();
