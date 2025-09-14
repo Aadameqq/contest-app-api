@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Web.Controllers.Requests;
+using Web.Controllers.Responses;
 
 namespace Web.Controllers;
 
@@ -12,6 +13,12 @@ public class AuthController(
 	UserManager<IdentityUser> userManager
 ) : ControllerBase
 {
+	[HttpGet]
+	public ActionResult<GetAuthResponse> Get()
+	{
+		return new GetAuthResponse(signInManager.IsSignedIn(User));
+	}
+
 	[HttpPost]
 	public async Task<IActionResult> LogIn([FromBody] LogInRequest req)
 	{

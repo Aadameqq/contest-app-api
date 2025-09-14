@@ -2,7 +2,7 @@ namespace Web.Controllers.Requests;
 
 public class LogInRequest
 {
-	public string Email { get; set; }
-	public string Password { get; set; }
-	public bool RememberMe { get; set; }
+	public required string Email { get; init; }
+	public required string Password { get; init; }
+	public required bool RememberMe { get; init; }
 }
