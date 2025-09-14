@@ -14,18 +14,24 @@ public class UsersController(UserManager<IdentityUser> userManager) : Controller
 	[HttpPost]
 	public async Task<IActionResult> Create([FromBody] CreateUserRequest req)
 	{
-		var user = new IdentityUser { UserName = req.UserName, Email = req.Email };
+		var user = new IdentityUser { UserName = req.Email, Email = req.Email };
 		var result = await userManager.CreateAsync(user, req.Password);
 
-		if (!result.Succeeded)
-		{
-			var modelState = new ModelStateDictionary();
-			foreach (var e in result.Errors)
-				modelState.AddModelError(e.Code, e.Description);
-			return ValidationProblem(modelState);
-		}
+		if (result.Succeeded)
+			return Created();
 
-		return Created();
+		var modelState = new ModelStateDictionary();
+		foreach (var e in result.Errors)
+		{
+			foreach (var key in (string[])["Email", "Password"])
+			{
+				if (e.Code.Contains(key))
+				{
+					modelState.AddModelError(key, e.Description);
+				}
+			}
+		}
+		return ValidationProblem(modelState);
 	}
 
 	[HttpGet("@me")]
@@ -38,6 +44,6 @@ public class UsersController(UserManager<IdentityUser> userManager) : Controller
 			return Unauthorized();
 		}
 
-		return new GetCurrentUserResponse(Guid.Parse(user.Id), user.UserName, user.Email);
+		return new GetCurrentUserResponse(user.Id, user.Email);
 	}
 }

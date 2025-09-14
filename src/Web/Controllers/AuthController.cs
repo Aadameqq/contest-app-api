@@ -8,10 +8,7 @@ namespace Web.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(
-	SignInManager<IdentityUser> signInManager,
-	UserManager<IdentityUser> userManager
-) : ControllerBase
+public class AuthController(SignInManager<IdentityUser> signInManager) : ControllerBase
 {
 	[HttpGet]
 	public ActionResult<GetAuthResponse> Get()
@@ -22,12 +19,8 @@ public class AuthController(
 	[HttpPost]
 	public async Task<IActionResult> LogIn([FromBody] LogInRequest req)
 	{
-		var user = await userManager.FindByEmailAsync(req.Email);
-		if (user == null)
-			return Unauthorized();
-
 		var result = await signInManager.PasswordSignInAsync(
-			user,
+			req.Email,
 			req.Password,
 			req.RememberMe,
 			false

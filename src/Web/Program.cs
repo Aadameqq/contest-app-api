@@ -18,7 +18,7 @@ app.UseOpenApi();
 
 app.UseHttpsRedirection();
 
-app.MapControllers();
 app.UseAuth();
+app.MapControllers();
 
 app.Run();

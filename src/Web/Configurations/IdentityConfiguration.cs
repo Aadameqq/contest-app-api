@@ -21,6 +21,7 @@ public static class IdentityConfiguration
 		{
 			options.SignIn.RequireConfirmedEmail = false;
 			options.SignIn.RequireConfirmedAccount = false;
+			options.User.RequireUniqueEmail = true;
 		});
 	}
 
