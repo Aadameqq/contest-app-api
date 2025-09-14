@@ -23,7 +23,7 @@ public class UsersController(UserManager<IdentityUser> userManager) : Controller
 		var modelState = new ModelStateDictionary();
 		foreach (var e in result.Errors)
 		{
-			foreach (var key in (string[])["Email", "Password"])
+			foreach (var key in new[] { "Email", "Password" })
 			{
 				if (e.Code.Contains(key))
 				{

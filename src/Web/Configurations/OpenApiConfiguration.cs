@@ -50,7 +50,7 @@ public static class OpenApiConfiguration
 				options.EnabledClients = [ScalarClient.Fetch, ScalarClient.Curl];
 				options
 					.AddPreferredSecuritySchemes(["CookieAuth"])
-					.AddApiKeyAuthentication("CookieAuth", (s) => { });
+					.AddApiKeyAuthentication("CookieAuth", _ => { });
 			}
 		);
 	}
