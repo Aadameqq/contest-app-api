@@ -1,4 +1,4 @@
-using Core.Options;
+using Core.Common.Infrastructure.Options;
 
 namespace Web.Configurations;
 

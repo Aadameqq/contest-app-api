@@ -1,7 +1,8 @@
 using Core.Common.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace Web.Configurations;
+namespace Web.Identity;
 
 public static class IdentityConfiguration
 {
@@ -10,6 +11,7 @@ public static class IdentityConfiguration
 		services.AddAuthorization();
 		services
 			.AddIdentityCore<IdentityUser>()
+			.AddRoles<IdentityRole>()
 			.AddSignInManager()
 			.AddEntityFrameworkStores<CommonContext>();
 
