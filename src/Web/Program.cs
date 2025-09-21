@@ -9,13 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.SetUpOptions();
 builder.SetUpStatusCodes();
 builder.Services.SetUpCore();
-builder
-	.Services.AddControllers()
-	.AddJsonOptions(options =>
-	{
-		options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-	})
-	.AddNewtonsoftJson();
+builder.Services.AddControllers();
 
 builder.Services.SetUpOpenApi();
 builder.Services.SetUpAuth();
