@@ -1,4 +1,5 @@
 using Core.Auth.Entities;
+using Core.Common.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,8 @@ namespace Web.Controllers;
 [ApiController]
 public class UsersController(
 	UserManager<IdentityUser> userManager,
-	RoleManager<IdentityRole> roleManager
+	RoleManager<IdentityRole> roleManager,
+	CommonContext ctx
 ) : ControllerBase
 {
 	[HttpPost]
@@ -63,7 +65,7 @@ public class UsersController(
 
 		if (user is null)
 		{
-			return BadRequest("User not found");
+			return NotFound("User not found");
 		}
 
 		var roles = await userManager.GetRolesAsync(user);
@@ -71,7 +73,7 @@ public class UsersController(
 		return new GetUserResponse(user.Id, user.Email, roles.ToList());
 	}
 
-	[HttpPatch("{id}/roles")]
+	[HttpPut("{id}/roles")]
 	[CheckAuth(Role.Admin)]
 	public async Task<IActionResult> ManageRoles(
 		[FromRoute] string id,
@@ -82,33 +84,30 @@ public class UsersController(
 
 		if (user is null)
 		{
-			return BadRequest($"User with id: '{id}' not found");
+			return NotFound("User not found");
 		}
 
-		var added = new List<string>();
-		var removed = new List<string>();
+		var currentState = await userManager.GetRolesAsync(user);
+		var newState = req.Roles;
 
-		foreach (var change in req.RoleChanges)
+		foreach (var role in newState)
 		{
-			var exists = await roleManager.RoleExistsAsync(change.RoleName);
+			var exists = await roleManager.RoleExistsAsync(role);
 
 			if (!exists)
 			{
-				return BadRequest($"Role with name: '{change.RoleName}' not found");
-			}
-
-			switch (change.Op)
-			{
-				case ManageRolesRequest.ManageRoleOperation.Add:
-					added.Add(change.RoleName);
-					break;
-				case ManageRolesRequest.ManageRoleOperation.Remove:
-					removed.Add(change.RoleName);
-					break;
-				default:
-					return BadRequest($"Unknown operation: {change.Op}");
+				return BadRequest($"Role with name: '{role}' not found");
 			}
 		}
+
+		var added = newState
+			.Except(currentState, StringComparer.OrdinalIgnoreCase)
+			.ToList();
+		var removed = currentState
+			.Except(newState, StringComparer.OrdinalIgnoreCase)
+			.ToList();
+
+		await using var tx = await ctx.Database.BeginTransactionAsync();
 
 		var result = await userManager.AddToRolesAsync(user, added);
 
@@ -117,11 +116,19 @@ public class UsersController(
 			result = await userManager.RemoveFromRolesAsync(user, removed);
 		}
 
-		if (!result.Succeeded)
+		if (result.Succeeded)
 		{
-			return BadRequest(result.Errors.First().Description);
+			await tx.CommitAsync();
+			return Ok();
 		}
 
-		return Ok();
+		await tx.RollbackAsync();
+
+		foreach (var e in result.Errors)
+		{
+			ModelState.AddModelError(e.Code, e.Description);
+		}
+
+		return ValidationProblem(ModelState);
 	}
 }

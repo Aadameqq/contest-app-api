@@ -14,7 +14,8 @@ builder
 	.AddJsonOptions(options =>
 	{
 		options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-	});
+	})
+	.AddNewtonsoftJson();
 
 builder.Services.SetUpOpenApi();
 builder.Services.SetUpAuth();

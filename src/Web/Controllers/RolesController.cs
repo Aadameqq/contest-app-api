@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
+using Core.Auth.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Web.Controllers.Requests;
-using Web.Controllers.Responses;
+using Web.Identity;
 
 namespace Web.Controllers;
 
@@ -10,7 +9,7 @@ namespace Web.Controllers;
 [ApiController]
 public class RolesController(RoleManager<IdentityRole> roleManager) : ControllerBase
 {
-	[Authorize]
+	[CheckAuth(Role.Admin, Role.Moderator)]
 	[HttpGet]
 	public List<string> GetRoles()
 	{
