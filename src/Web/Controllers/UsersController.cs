@@ -44,6 +44,7 @@ public class UsersController(
 	public async Task<ActionResult<GetUserResponse>> GetCurrentUser()
 	{
 		var user = await userManager.GetUserAsync(User);
+
 		if (user is null)
 		{
 			return Unauthorized();
@@ -59,6 +60,7 @@ public class UsersController(
 	public async Task<ActionResult<GetUserResponse>> GetUser([FromRoute] string id)
 	{
 		var user = await userManager.FindByIdAsync(id);
+
 		if (user is null)
 		{
 			return BadRequest("User not found");
@@ -97,10 +99,10 @@ public class UsersController(
 
 			switch (change.Op)
 			{
-				case ManageRolesRequest.Operation.Add:
+				case ManageRolesRequest.ManageRoleOperation.Add:
 					added.Add(change.RoleName);
 					break;
-				case ManageRolesRequest.Operation.Remove:
+				case ManageRolesRequest.ManageRoleOperation.Remove:
 					removed.Add(change.RoleName);
 					break;
 				default:

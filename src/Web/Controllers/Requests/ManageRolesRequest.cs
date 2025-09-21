@@ -1,18 +1,23 @@
+using System.Runtime.Serialization;
+
 namespace Web.Controllers.Requests;
 
 public class ManageRolesRequest
 {
-	public required List<ManageRoleRequest> RoleChanges { get; init; }
+	public required List<ManageRoleSingleChange> RoleChanges { get; init; }
 
-	public class ManageRoleRequest
+	public class ManageRoleSingleChange
 	{
-		public required string Op { get; set; }
+		public required ManageRoleOperation Op { get; set; }
 		public required string RoleName { get; set; }
 	}
 
-	public static class Operation
+	public enum ManageRoleOperation
 	{
-		public const string Add = "add";
-		public const string Remove = "remove";
+		[EnumMember(Value = "add")]
+		Add,
+
+		[EnumMember(Value = "remove")]
+		Remove,
 	}
 }
