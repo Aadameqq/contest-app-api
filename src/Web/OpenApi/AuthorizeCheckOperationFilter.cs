@@ -8,15 +8,26 @@ public class AuthorizeCheckOperationFilter : IOperationFilter
 {
 	public void Apply(OpenApiOperation operation, OperationFilterContext context)
 	{
-		var hasAuthorize = context
+		var authorizeAttrs = context
 			.MethodInfo.GetCustomAttributes(true)
-			.OfType<AuthorizeAttribute>()
-			.Any();
+			.OfType<AuthorizeAttribute>();
 
-		if (!hasAuthorize)
+		if (!authorizeAttrs.Any())
 			return;
 
+		var attr = authorizeAttrs.First();
+
 		operation.Description = "🔐 Requires authentication";
+
+		if (attr.Roles is null)
+		{
+			operation.Description += $"<br>🪪 Requires no role";
+		}
+		else
+		{
+			operation.Description +=
+				$"<br>🪪 Requires any of the following roles: {attr.Roles}";
+		}
 
 		operation.Security ??= [];
 

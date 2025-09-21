@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
 using Core;
 using Web.Configurations;
+using Web.Identity;
+using Web.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 

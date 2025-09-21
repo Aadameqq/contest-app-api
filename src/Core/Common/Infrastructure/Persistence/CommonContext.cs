@@ -1,6 +1,6 @@
 using Core.Auth.Entities;
 using Core.Auth.Infrastructure.Persistence;
-using Core.Options;
+using Core.Common.Infrastructure.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -11,8 +11,6 @@ namespace Core.Common.Infrastructure.Persistence;
 public class CommonContext(IOptions<DatabaseOptions> databaseConfig)
 	: IdentityDbContext<IdentityUser>
 {
-	public DbSet<Greeting> Greetings { get; set; }
-
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
 		optionsBuilder.UseNpgsql(databaseConfig.Value.ConnectionString);
@@ -21,6 +19,6 @@ public class CommonContext(IOptions<DatabaseOptions> databaseConfig)
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
-		modelBuilder.ApplyConfiguration(new GreetingEntityTypeConfiguration());
+		modelBuilder.ApplyConfiguration(new RolesEntityTypeConfiguration());
 	}
 }
