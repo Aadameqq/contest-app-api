@@ -1,6 +1,3 @@
 namespace Core.Common.Application;
 
-public interface Service
-{
-    
-}
+public interface Service { }
