@@ -2,7 +2,6 @@ using Core.Auth.Entities;
 using Core.Problems.Application.Services.Tags;
 using Core.Problems.Application.Services.Tags.Inputs;
 using Core.Problems.Entities;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Web.Controllers.Requests;
 using Web.Identity;
