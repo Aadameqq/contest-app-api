@@ -12,7 +12,7 @@ public static class IdentityConfiguration
 			.AddIdentityCore<IdentityUser>()
 			.AddRoles<IdentityRole>()
 			.AddSignInManager()
-			.AddEntityFrameworkStores<CommonContext>();
+			.AddEntityFrameworkStores<AppDbContext>();
 
 		services
 			.AddAuthentication(IdentityConstants.ApplicationScheme)
