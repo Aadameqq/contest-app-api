@@ -15,7 +15,7 @@ namespace Web.Controllers;
 public class UsersController(
 	UserManager<IdentityUser> userManager,
 	RoleManager<IdentityRole> roleManager,
-	CommonContext ctx
+	AppDbContext ctx
 ) : ControllerBase
 {
 	[HttpPost]

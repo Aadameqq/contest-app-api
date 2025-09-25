@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.Migrations
 {
-    [DbContext(typeof(CommonContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20250913195742_AddAuth")]
     partial class AddAuth
     {

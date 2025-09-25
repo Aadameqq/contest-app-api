@@ -1,3 +1,4 @@
+using Core.Common.Application.Exceptions;
 using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
 
@@ -13,6 +14,8 @@ public static class StatusCodesConfiguration
 			{
 				options.IncludeExceptionDetails = (_, _) =>
 					builder.Environment.IsDevelopment();
+
+				options.MapToStatusCode<NoSuch>(StatusCodes.Status404NotFound);
 			})
 			.AddProblemDetailsConventions();
 	}
