@@ -13,7 +13,7 @@ public class TagsService(
 	UnitOfWork uow
 ) : Service
 {
-	public async Task<Tag> Create(CreateTagInput input, CancellationToken ct = default)
+	public async Task<Tag> Create(CreateTagInput input)
 	{
 		var baseSlug = slugGenerator.Generate(input.Title);
 
@@ -28,11 +28,11 @@ public class TagsService(
 		var tag = new Tag { Title = input.Title, Slug = slug };
 
 		await tagsRepository.Create(tag);
-		await uow.SaveChangesAsync(ct);
+		await uow.SaveChangesAsync();
 		return tag;
 	}
 
-	public async Task<Tag> Find(FindTagInput input, CancellationToken _ = default)
+	public async Task<Tag> Find(FindTagInput input)
 	{
 		var found = await tagsRepository.Find(input.Slug);
 		return found ?? throw new NoSuch("Tag not found");
@@ -43,7 +43,7 @@ public class TagsService(
 		return tagsRepository.ListAll();
 	}
 
-	public async Task Update(UpdateTagInput input, CancellationToken ct = default)
+	public async Task Update(UpdateTagInput input)
 	{
 		var found = await tagsRepository.Find(input.Slug);
 		if (found is null)
@@ -54,10 +54,10 @@ public class TagsService(
 		found.Title = input.Title;
 
 		await tagsRepository.Update(found);
-		await uow.SaveChangesAsync(ct);
+		await uow.SaveChangesAsync();
 	}
 
-	public async Task Delete(FindTagInput input, CancellationToken ct = default)
+	public async Task Delete(FindTagInput input)
 	{
 		var found = await tagsRepository.Find(input.Slug);
 		if (found is null)
@@ -66,6 +66,6 @@ public class TagsService(
 		}
 
 		await tagsRepository.Delete(found);
-		await uow.SaveChangesAsync(ct);
+		await uow.SaveChangesAsync();
 	}
 }
