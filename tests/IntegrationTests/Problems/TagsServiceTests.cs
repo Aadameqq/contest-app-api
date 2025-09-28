@@ -20,7 +20,7 @@ public class TagsServiceTests(TestWebApplicationFactory factory)
 	[Fact]
 	public async Task test()
 	{
-		using var scope = GetScope();
+		using var scope = UseScope();
 		var found = await scope.Service.Find(new FindTagInput(testTag.Slug));
 
 		found.ShouldNotBeNull().ShouldBeEquivalentTo(testTag);
@@ -29,14 +29,14 @@ public class TagsServiceTests(TestWebApplicationFactory factory)
 	[Fact]
 	public async Task test2()
 	{
-		using var scope = GetScope();
+		using var scope = UseScope();
 		await scope.Service.Delete(new FindTagInput(testTag.Slug));
 	}
 
 	[Fact]
 	public async Task test3()
 	{
-		using var scope = GetScope();
+		using var scope = UseScope();
 		var found = await scope.Service.Find(new FindTagInput(testTag.Slug));
 
 		found.ShouldNotBeNull().ShouldBeEquivalentTo(testTag);

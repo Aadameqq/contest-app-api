@@ -13,7 +13,6 @@ public abstract class TestBase<T>(TestWebApplicationFactory factory) : IAsyncLif
 	{
 		using var scope = factory.Services.CreateScope();
 		var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-		Console.WriteLine("test");
 		await Seed(ctx);
 		await ctx.SaveChangesAsync();
 	}
@@ -23,7 +22,7 @@ public abstract class TestBase<T>(TestWebApplicationFactory factory) : IAsyncLif
 		await factory.ResetDatabase();
 	}
 
-	protected Scoped GetScope()
+	protected Scoped UseScope()
 	{
 		return new Scoped(factory.Services.CreateScope());
 	}
@@ -31,6 +30,8 @@ public abstract class TestBase<T>(TestWebApplicationFactory factory) : IAsyncLif
 	protected class Scoped(IServiceScope scope) : IDisposable
 	{
 		public T Service => scope.ServiceProvider.GetRequiredService<T>();
+		public AppDbContext Ctx =>
+			scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
 		public void Dispose()
 		{
