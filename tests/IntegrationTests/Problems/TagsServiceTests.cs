@@ -47,7 +47,7 @@ public class TagsServiceTests(TestWebApplicationFactory factory)
 		await scope.Service.Delete(new FindTagInput(testTag.Slug));
 
 		await Assert.ThrowsAsync<NoSuch>(() =>
-			scope.Service.Find(new FindTagInput("invalid-tag"))
+			scope.Service.Find(new FindTagInput(testTag.Slug))
 		);
 	}
 

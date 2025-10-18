@@ -13,7 +13,7 @@ namespace IntegrationTests;
 public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
 	private readonly PostgreSqlContainer dbContainer = new PostgreSqlBuilder()
-		.WithImage("postgres:latest")
+		.WithImage("postgres:14")
 		.WithDatabase("contest-app")
 		.WithUsername("admin")
 		.WithPassword("admin")
@@ -49,11 +49,12 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
 	{
 		await dbConnection.DisposeAsync();
 		await dbContainer.DisposeAsync();
+		await base.DisposeAsync();
 	}
 
 	protected override void ConfigureWebHost(IWebHostBuilder builder)
 	{
-		Environment.SetEnvironmentVariable(
+		builder.UseSetting(
 			"Database:ConnectionString",
 			dbContainer.GetConnectionString()
 		);
