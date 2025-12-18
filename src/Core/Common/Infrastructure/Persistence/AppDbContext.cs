@@ -16,6 +16,7 @@ public class AppDbContext(IOptions<DatabaseOptions> databaseConfig)
 		UnitOfWork
 {
 	public DbSet<Tag> Tags { get; set; }
+	public DbSet<Problem> Problems { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -27,5 +28,6 @@ public class AppDbContext(IOptions<DatabaseOptions> databaseConfig)
 		base.OnModelCreating(modelBuilder);
 		modelBuilder.ApplyConfiguration(new RolesEntityTypeConfiguration());
 		modelBuilder.ApplyConfiguration(new TagsEntityTypeConfiguration());
+		modelBuilder.ApplyConfiguration(new ProblemsEntityTypeConfiguration());
 	}
 }

@@ -31,6 +31,7 @@
 - `npm run check` - runs csharpier check
 - `npm run create:migration -- MigrationName` - creates a new migration
 - `npm run remove:migration:dev` - removes the latest migration
+- `npm run test` - pretty self-explanatory
 
 "dev" keyword in commands indicates that it should NOT be run in production
 
