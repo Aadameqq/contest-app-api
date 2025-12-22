@@ -1,6 +1,7 @@
 using Core.Common.Application.Ports;
 using Core.Common.Infrastructure.Persistence;
 using Core.Problems.Application.Ports;
+using Core.Problems.Application.Services.Problems;
 using Core.Problems.Application.Services.Tags;
 using Core.Problems.Infrastructure;
 using Core.Problems.Infrastructure.Persistence;
@@ -15,10 +16,12 @@ public static class Dependencies
 		services.AddDbContext<AppDbContext>();
 
 		services.AddScoped<TagsRepository, EfTagsRepository>();
+		services.AddScoped<ProblemsRepository, EfProblemsRepository>();
 		services.AddSingleton<SlugGenerator, SlugGeneratorImpl>();
 
 		services.AddScoped<UnitOfWork>(c => c.GetRequiredService<AppDbContext>());
 
 		services.AddScoped<TagsService>();
+		services.AddScoped<ProblemsService>();
 	}
 }

@@ -30,4 +30,25 @@ public class AppDbContext(IOptions<DatabaseOptions> databaseConfig)
 		modelBuilder.ApplyConfiguration(new TagsEntityTypeConfiguration());
 		modelBuilder.ApplyConfiguration(new ProblemsEntityTypeConfiguration());
 	}
+
+	public override Task<int> SaveChangesAsync(CancellationToken ct = default)
+	{
+		foreach (
+			var entry in ChangeTracker
+				.Entries()
+				.Where(entry => entry.Entity.GetType().GetProperty("CreatedAt") != null)
+		)
+		{
+			if (entry.State == EntityState.Added)
+			{
+				entry.Property("CreatedAt").CurrentValue = DateTime.UtcNow;
+			}
+			if (entry.State == EntityState.Modified)
+			{
+				entry.Property("CreatedAt").IsModified = false;
+			}
+			entry.Property("UpdatedAt").CurrentValue = DateTime.UtcNow;
+		}
+		return base.SaveChangesAsync(ct);
+	}
 }

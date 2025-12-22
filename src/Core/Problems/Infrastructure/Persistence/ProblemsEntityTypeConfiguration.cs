@@ -13,11 +13,8 @@ public class ProblemsEntityTypeConfiguration : IEntityTypeConfiguration<Problem>
 		builder.Property(t => t.Title).IsRequired();
 		builder.Property(t => t.Slug).IsRequired();
 		builder.HasIndex(t => t.Slug).IsUnique();
-		builder.Property(b => b.CreatedAt).HasDefaultValueSql("getdate()");
-		builder
-			.Property(b => b.UpdatedAt)
-			.ValueGeneratedOnAddOrUpdate()
-			.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+		builder.Property(b => b.CreatedAt);
+		builder.Property(b => b.UpdatedAt);
 		builder.HasMany(problem => problem.Tags).WithMany();
 	}
 }
