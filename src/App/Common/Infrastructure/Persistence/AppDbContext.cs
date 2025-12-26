@@ -1,9 +1,11 @@
-using Core.Auth.Entities;
-using Core.Auth.Infrastructure.Persistence;
-using Core.Common.Application.Ports;
-using Core.Common.Infrastructure.Options;
-using Core.Problems.Entities;
-using Core.Problems.Infrastructure.Persistence;
+using App.Common.Infrastructure.Options;
+using App.Common.Logic.Ports;
+using App.Features.Auth.Domain;
+using App.Features.Auth.Infrastructure;
+using App.Features.Problems.Domain;
+using App.Features.Problems.Infrastructure;
+using App.Features.Tags.Domain;
+using App.Features.Tags.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

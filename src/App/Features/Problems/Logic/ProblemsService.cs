@@ -1,11 +1,11 @@
+using App.Common.Logic;
+using App.Common.Logic.Exceptions;
+using App.Common.Logic.Ports;
 using App.Features.Problems.Domain;
 using App.Features.Problems.Logic.Inputs;
 using App.Features.Problems.Logic.Ports;
-using Core.Common.Application;
-using Core.Common.Application.Exceptions;
-using Core.Common.Application.Ports;
-using Core.Problems.Application.Ports;
-using Core.Problems.Entities;
+using App.Features.Tags.Domain;
+using App.Features.Tags.Logic.Ports;
 
 namespace App.Features.Problems.Logic;
 
