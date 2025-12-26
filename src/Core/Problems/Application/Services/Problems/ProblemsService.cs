@@ -32,7 +32,7 @@ public class ProblemsService(
 			var tag = await tagsRepository.Find(tagSlug);
 			if (tag is null)
 			{
-				throw new NoSuch($"Tag with slug '{tagSlug}' not found");
+				throw new InvalidArgument($"Tag with slug '{tagSlug}' not found");
 			}
 			tags.Add(tag);
 		}
@@ -42,8 +42,6 @@ public class ProblemsService(
 			Title = input.Title,
 			Slug = slug,
 			Tags = tags,
-			CreatedAt = DateTime.UtcNow,
-			UpdatedAt = DateTime.UtcNow,
 		};
 
 		await problemsRepository.Create(problem);
@@ -71,7 +69,7 @@ public class ProblemsService(
 			var tag = await tagsRepository.Find(tagSlug);
 			if (tag is null)
 			{
-				throw new NoSuch($"Tag with slug '{tagSlug}' not found");
+				throw new InvalidArgument($"Tag with slug '{tagSlug}' not found");
 			}
 			tags.Add(tag);
 		}

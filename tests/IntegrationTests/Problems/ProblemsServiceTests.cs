@@ -107,7 +107,7 @@ public class ProblemsServiceTests(TestWebApplicationFactory factory)
 	public async Task testUpdateShouldFailIfTagNotFound()
 	{
 		using var scope = UseScope();
-		await Assert.ThrowsAsync<NoSuch>(() =>
+		await Assert.ThrowsAsync<InvalidArgument>(() =>
 			scope.Service.Update(
 				new UpdateProblemInput(testProblem.Slug, "title", ["invalid-tag"])
 			)
@@ -167,7 +167,7 @@ public class ProblemsServiceTests(TestWebApplicationFactory factory)
 	public async Task testCreateShouldFailIfTagNotFound()
 	{
 		using var scope = UseScope();
-		await Assert.ThrowsAsync<NoSuch>(() =>
+		await Assert.ThrowsAsync<InvalidArgument>(() =>
 			scope.Service.Create(new CreateProblemInput("title", ["invalid-tag"]))
 		);
 	}

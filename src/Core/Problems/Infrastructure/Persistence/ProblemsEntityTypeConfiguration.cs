@@ -1,6 +1,5 @@
 using Core.Problems.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Problems.Infrastructure.Persistence;

@@ -1,5 +1,9 @@
 # Contest App
 
+## Introduction
+
+Contest App is a modern web API built with .NET 8 that provides a platform for managing programming contests and challenges. The application follows clean architecture principles with a clear separation of concerns, making it maintainable and testable.
+
 ## Development
 
 ### Pre-requisites:
