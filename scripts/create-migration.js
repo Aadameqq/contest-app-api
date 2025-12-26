@@ -5,9 +5,7 @@ const args = process.argv.slice(2);
 const migrationName = args[0];
 
 const dotnetArgs = [
-    'ef', 'migrations', 'add', migrationName,
-    '--project', './src/Core',
-    '--startup-project', './src/Web'
+    'ef', 'migrations', 'add', migrationName
 ];
 
 const proc = spawn('dotnet', dotnetArgs, { stdio: 'inherit' });
