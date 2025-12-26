@@ -1,5 +1,5 @@
-using App.Features.Auth.Domain;
-using App.Identity;
+using App.Common.Domain;
+using App.Common.Web.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

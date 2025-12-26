@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 using App.Common;
-using App.Configurations;
+using App.Common.Web;
+using App.Common.Web.Identity;
+using App.Common.Web.OpenApi;
 using App.Features;
-using App.Identity;
-using App.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 

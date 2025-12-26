@@ -1,4 +1,4 @@
-using App.Features.Auth.Domain;
+using App.Common.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

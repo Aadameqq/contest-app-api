@@ -1,9 +1,9 @@
-using App.Features.Auth.Domain;
+using App.Common.Domain;
+using App.Common.Web.Identity;
 using App.Features.Problems.Controllers.Requests;
 using App.Features.Problems.Domain;
 using App.Features.Problems.Logic;
 using App.Features.Problems.Logic.Inputs;
-using App.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Features.Problems.Controllers;

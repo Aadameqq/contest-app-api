@@ -1,6 +1,6 @@
+using App.Common.Domain;
 using App.Common.Infrastructure.Options;
 using App.Common.Logic.Ports;
-using App.Features.Auth.Domain;
 using App.Features.Auth.Infrastructure;
 using App.Features.Problems.Domain;
 using App.Features.Problems.Infrastructure;

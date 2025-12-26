@@ -1,7 +1,7 @@
 using App.Common.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 
-namespace App.Identity;
+namespace App.Common.Web.Identity;
 
 public static class IdentityConfiguration
 {

@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 
-namespace App.OpenApi;
+namespace App.Common.Web.OpenApi;
 
 public static class OpenApiConfiguration
 {

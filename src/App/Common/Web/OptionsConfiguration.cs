@@ -1,6 +1,6 @@
 using App.Common.Infrastructure.Options;
 
-namespace App.Configurations;
+namespace App.Common.Web;
 
 public static class OptionsConfiguration
 {

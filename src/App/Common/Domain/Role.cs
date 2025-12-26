@@ -1,4 +1,4 @@
-namespace App.Features.Auth.Domain;
+namespace App.Common.Domain;
 
 public enum Role
 {

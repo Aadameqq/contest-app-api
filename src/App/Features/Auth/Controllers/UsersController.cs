@@ -1,8 +1,8 @@
+using App.Common.Domain;
 using App.Common.Infrastructure.Persistence;
+using App.Common.Web.Identity;
 using App.Features.Auth.Controllers.Requests;
 using App.Features.Auth.Controllers.Responses;
-using App.Features.Auth.Domain;
-using App.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

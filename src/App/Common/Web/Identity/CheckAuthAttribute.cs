@@ -1,7 +1,7 @@
-using App.Features.Auth.Domain;
+using App.Common.Domain;
 using Microsoft.AspNetCore.Authorization;
 
-namespace App.Identity;
+namespace App.Common.Web.Identity;
 
 public class CheckAuthAttribute : AuthorizeAttribute
 {
