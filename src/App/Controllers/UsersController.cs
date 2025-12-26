@@ -1,6 +1,6 @@
 using App.Common.Infrastructure.Persistence;
-using App.Features.Auth.Controllers.Requests;
-using App.Features.Auth.Controllers.Responses;
+using App.Controllers.Requests;
+using App.Controllers.Responses;
 using App.Features.Auth.Domain;
 using App.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace App.Features.Auth.Controllers;
+namespace App.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
