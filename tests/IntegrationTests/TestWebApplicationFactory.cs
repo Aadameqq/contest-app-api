@@ -1,5 +1,5 @@
 using System.Data.Common;
-using Core.Common.Infrastructure.Persistence;
+using App.Common.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;

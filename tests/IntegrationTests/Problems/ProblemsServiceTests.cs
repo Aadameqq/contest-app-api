@@ -1,8 +1,8 @@
-using Core.Common.Application.Exceptions;
-using Core.Common.Infrastructure.Persistence;
-using Core.Problems.Application.Services.Problems;
-using Core.Problems.Application.Services.Problems.Inputs;
-using Core.Problems.Entities;
+using App.Common.Logic.Exceptions;
+using App.Common.Infrastructure.Persistence;
+using App.Features.Problems.Logic;
+using App.Features.Problems.Logic.Inputs;
+using App.Features.Problems.Domain;
 using Shouldly;
 
 namespace IntegrationTests.Problems;
