@@ -2,7 +2,7 @@ using Core.Common.Application.Exceptions;
 using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
 
-namespace Web.Configurations;
+namespace App.Configurations;
 
 public static class StatusCodesConfiguration
 {

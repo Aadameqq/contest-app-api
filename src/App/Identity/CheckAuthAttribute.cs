@@ -1,7 +1,7 @@
 using Core.Auth.Entities;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Web.Identity;
+namespace App.Identity;
 
 public class CheckAuthAttribute : AuthorizeAttribute
 {

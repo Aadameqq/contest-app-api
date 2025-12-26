@@ -1,12 +1,12 @@
+using App.Controllers.Requests;
+using App.Identity;
 using Core.Auth.Entities;
 using Core.Problems.Application.Services.Problems;
 using Core.Problems.Application.Services.Problems.Inputs;
 using Core.Problems.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Web.Controllers.Requests;
-using Web.Identity;
 
-namespace Web.Controllers;
+namespace App.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

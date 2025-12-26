@@ -1,4 +1,4 @@
-namespace Web.Controllers.Requests;
+namespace App.Controllers.Requests;
 
 public class CreateTagRequest
 {

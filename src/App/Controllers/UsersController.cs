@@ -1,14 +1,14 @@
+using App.Controllers.Requests;
+using App.Controllers.Responses;
+using App.Identity;
 using Core.Auth.Entities;
 using Core.Common.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Web.Controllers.Requests;
-using Web.Controllers.Responses;
-using Web.Identity;
 
-namespace Web.Controllers;
+namespace App.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

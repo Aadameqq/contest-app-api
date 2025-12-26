@@ -1,9 +1,9 @@
+using App.Identity;
 using Core.Auth.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Web.Identity;
 
-namespace Web.Controllers;
+namespace App.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
