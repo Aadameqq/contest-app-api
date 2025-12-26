@@ -16,6 +16,7 @@ public class AppDbContext(IOptions<DatabaseOptions> databaseConfig)
 		UnitOfWork
 {
 	public DbSet<Tag> Tags { get; set; }
+	public DbSet<Problem> Problems { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -27,5 +28,27 @@ public class AppDbContext(IOptions<DatabaseOptions> databaseConfig)
 		base.OnModelCreating(modelBuilder);
 		modelBuilder.ApplyConfiguration(new RolesEntityTypeConfiguration());
 		modelBuilder.ApplyConfiguration(new TagsEntityTypeConfiguration());
+		modelBuilder.ApplyConfiguration(new ProblemsEntityTypeConfiguration());
+	}
+
+	public override Task<int> SaveChangesAsync(CancellationToken ct = default)
+	{
+		foreach (
+			var entry in ChangeTracker
+				.Entries()
+				.Where(entry => entry.Entity.GetType().GetProperty("CreatedAt") != null)
+		)
+		{
+			if (entry.State == EntityState.Added)
+			{
+				entry.Property("CreatedAt").CurrentValue = DateTime.UtcNow;
+			}
+			if (entry.State == EntityState.Modified)
+			{
+				entry.Property("CreatedAt").IsModified = false;
+			}
+			entry.Property("UpdatedAt").CurrentValue = DateTime.UtcNow;
+		}
+		return base.SaveChangesAsync(ct);
 	}
 }

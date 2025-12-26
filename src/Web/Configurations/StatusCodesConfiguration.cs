@@ -16,6 +16,7 @@ public static class StatusCodesConfiguration
 					builder.Environment.IsDevelopment();
 
 				options.MapToStatusCode<NoSuch>(StatusCodes.Status404NotFound);
+				options.MapToStatusCode<InvalidArgument>(StatusCodes.Status400BadRequest);
 			})
 			.AddProblemDetailsConventions();
 	}
