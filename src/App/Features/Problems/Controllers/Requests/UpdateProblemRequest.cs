@@ -1,4 +1,4 @@
-namespace App.Controllers.Requests;
+namespace App.Features.Problems.Controllers.Requests;
 
 public class UpdateProblemRequest
 {
