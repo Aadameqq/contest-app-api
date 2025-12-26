@@ -7,7 +7,7 @@ using App.Features.Tags.Domain;
 using Shouldly;
 using Tests.Common.IntegrationTests;
 
-namespace Tests.Features.Problems;
+namespace Tests.Features.Problems.IntegrationTests;
 
 [Collection("IntegrationTests")]
 public class ProblemsServiceTests(TestWebApplicationFactory factory)

@@ -6,7 +6,7 @@ using App.Features.Tags.Logic.Inputs;
 using Shouldly;
 using Tests.Common.IntegrationTests;
 
-namespace Tests.Features.Tags;
+namespace Tests.Features.Tags.IntegrationTests;
 
 [Collection("IntegrationTests")]
 public class TagsServiceTests(TestWebApplicationFactory factory)
