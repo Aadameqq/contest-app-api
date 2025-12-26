@@ -1,10 +1,10 @@
-using App.Controllers.Requests;
-using App.Controllers.Responses;
+using App.Features.Auth.Controllers.Requests;
+using App.Features.Auth.Controllers.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Controllers;
+namespace App.Features.Auth.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

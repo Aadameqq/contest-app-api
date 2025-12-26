@@ -3,7 +3,7 @@ using Core.Auth.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Controllers;
+namespace App.Features.Auth.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

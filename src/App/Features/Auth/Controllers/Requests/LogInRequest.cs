@@ -1,4 +1,4 @@
-namespace App.Controllers.Requests;
+namespace App.Features.Auth.Controllers.Requests;
 
 public class LogInRequest
 {
