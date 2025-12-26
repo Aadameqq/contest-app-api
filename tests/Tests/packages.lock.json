@@ -1838,19 +1838,13 @@
           "xunit.extensibility.core": "[2.4.2]"
         }
       },
-      "core": {
+      "app": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[8.0.20, )",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "[9.0.4, )"
-        }
-      },
-      "web": {
-        "type": "Project",
-        "dependencies": {
-          "Core": "[1.0.0, )",
           "Hellang.Middleware.ProblemDetails": "[6.5.1, )",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[8.0.20, )",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "[8.0.20, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[9.0.4, )",
           "Scalar.AspNetCore": "[2.8.3, )",
           "Swashbuckle.AspNetCore": "[6.6.2, )"
         }

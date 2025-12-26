@@ -5,12 +5,13 @@ using App.Features.Problems.Logic;
 using App.Features.Problems.Logic.Inputs;
 using App.Features.Tags.Domain;
 using Shouldly;
+using Tests.Common.IntegrationTests;
 
-namespace IntegrationTests.Problems;
+namespace Tests.Features.Problems;
 
-[Collection("ProblemsTests")]
+[Collection("IntegrationTests")]
 public class ProblemsServiceTests(TestWebApplicationFactory factory)
-	: TestBase<ProblemsService>(factory)
+	: IntegrationTestBase<ProblemsService>(factory)
 {
 	private readonly Tag testTag1 = new() { Title = "Tag One", Slug = "tag-one" };
 	private readonly Tag testTag2 = new() { Title = "Tag Two", Slug = "tag-two" };

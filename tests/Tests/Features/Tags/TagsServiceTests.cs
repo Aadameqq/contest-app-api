@@ -4,12 +4,13 @@ using App.Features.Tags.Domain;
 using App.Features.Tags.Logic;
 using App.Features.Tags.Logic.Inputs;
 using Shouldly;
+using Tests.Common.IntegrationTests;
 
-namespace IntegrationTests.Problems;
+namespace Tests.Features.Tags;
 
-[Collection("ProblemsTests")]
+[Collection("IntegrationTests")]
 public class TagsServiceTests(TestWebApplicationFactory factory)
-	: TestBase<TagsService>(factory)
+	: IntegrationTestBase<TagsService>(factory)
 {
 	private readonly Tag testTag = new() { Title = "Test Tag", Slug = "test-tag" };
 

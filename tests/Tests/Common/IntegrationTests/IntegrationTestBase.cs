@@ -2,9 +2,10 @@ using App.Common.Infrastructure.Persistence;
 using App.Common.Logic;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IntegrationTests;
+namespace Tests.Common.IntegrationTests;
 
-public abstract class TestBase<T>(TestWebApplicationFactory factory) : IAsyncLifetime
+public abstract class IntegrationTestBase<T>(TestWebApplicationFactory factory)
+	: IAsyncLifetime
 	where T : Service
 {
 	protected abstract Task Seed(AppDbContext ctx);
