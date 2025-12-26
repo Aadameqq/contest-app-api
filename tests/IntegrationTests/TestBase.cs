@@ -1,5 +1,5 @@
-using App.Common.Logic;
 using App.Common.Infrastructure.Persistence;
+using App.Common.Logic;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IntegrationTests;
