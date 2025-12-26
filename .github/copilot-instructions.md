@@ -2,33 +2,37 @@
 
 ## Architecture Overview
 
-This is a .NET 8 Web API using a **layered architecture** with strict separation of concerns:
+This is a .NET 8 Web API using a **feature-based architecture** with strict separation of concerns:
 
-- **Core** (`src/Core/`): Domain logic, entities, services, and infrastructure implementations
-- **Web** (`src/Web/`): HTTP layer, controllers, authentication, and OpenAPI configuration
+- **App** (`src/App/`): Single project containing all application layers
+- **Common** (`src/App/Common/`): Shared components, base services, and infrastructure
+- **Features** (`src/App/Features/`): Feature modules organized by domain area
 - **IntegrationTests** (`tests/IntegrationTests/`): Tests using `TestWebApplicationFactory`
 
-### Core Layer Structure
+### Feature Module Structure
 
-The Core project is organized by **feature modules** (e.g., `Problems/`, `Auth/`), each containing:
+Each feature module in `src/App/Features/` (e.g., `Problems/`, `Auth/`, `Tags/`) contains:
 
 ```
-Problems/
-├── Application/
-│   ├── Ports/          # Interfaces (repositories, services)
-│   └── Services/       # Business logic with Inputs/ subdirectory
-├── Entities/           # Domain models
-└── Infrastructure/     # Implementations (repositories, EF configurations)
+Tags/
+├── Controllers/        # HTTP controllers and request/response models
+├── Domain/             # Domain entities and value objects
+├── Infrastructure/     # EF configurations and external service implementations
+├── Logic/              # Business services and application logic
+│   ├── Inputs/         # Input records for services
+│   ├── Ports/          # Interface definitions (repositories, external services)
+│   └── TagsService.cs  # Service implementation
+└── Dependencies.cs     # DI registration for the feature
 ```
 
 ### Key Architectural Patterns
 
-1. **Repository Pattern**: Interfaces in `Application/Ports/`, EF implementations in `Infrastructure/Persistence/`
+1. **Repository Pattern**: Interfaces in `Logic/Ports/`, EF implementations in `Infrastructure/`
    - Example: `TagsRepository` interface → `EfTagsRepository` implementation
    - Repositories define domain operations, not generic CRUD
 
-2. **Service Layer**: Services in `Application/Services/[Feature]/` inherit from marker interface `Service`
-   - Services accept `Input` records (e.g., `CreateTagInput`) from `Inputs/` subdirectory
+2. **Service Layer**: Services in `Logic/` inherit from marker interface `Service`
+   - Services accept `Input` records (e.g., `CreateTagInput`) from `Logic/Inputs/` subdirectory
    - Services coordinate repositories and domain logic
    - Example: `TagsService` handles tag creation with slug generation
 
@@ -36,7 +40,10 @@ Problems/
    - All persistence changes saved explicitly via `uow.SaveChangesAsync()`
    - No auto-save in repositories
 
-4. **Dependency Injection**: Registered in `Core/Dependencies.cs` using extension method `SetUpCore()`
+4. **Dependency Injection**: 
+   - Common services registered in `Common/Dependencies.cs` using extension method `SetUpCommon()`
+   - Feature services registered in each `Features/[Feature]/Dependencies.cs` using extension method `SetUp[Feature]()`
+   - All combined via `Features/Dependencies.cs` using `SetUpFeatures()`
    - Repositories: Scoped
    - Services: Scoped
    - UnitOfWork: Resolved from `AppDbContext`
@@ -58,14 +65,14 @@ npm run start:dev                  # Run with hot reload (dotnet watch)
 ```bash
 npm run create:migration -- MigrationName
 ```
-This runs `dotnet ef migrations add` with correct Core/Web project paths.
+This runs `dotnet ef migrations add` with the App project.
 
 **Removing migrations (dev only):**
 ```bash
 npm run remove:migration:dev
 ```
 
-**Important**: Migrations live in `src/Core/Migrations/` but require `--startup-project ./src/Web` because Web has the EF Design package and app configuration.
+**Important**: Migrations live in `src/App/Migrations/` and run from the single App project.
 
 ### Code Formatting
 
@@ -80,15 +87,15 @@ No format command exists—configure CSharpier in your IDE.
 ### Namespace Structure
 
 Namespaces follow folder structure exactly:
-- `Core.Problems.Entities` → `src/Core/Problems/Entities/`
-- `Core.Problems.Application.Services.Tags.Inputs` → `src/Core/Problems/Application/Services/Tags/Inputs/`
+- `App.Features.Problems.Domain` → `src/App/Features/Problems/Domain/`
+- `App.Features.Tags.Logic.Inputs` → `src/App/Features/Tags/Logic/Inputs/`
 
 ### Entity Conventions
 
 Entities are POCOs with:
 - `Guid Id { get; init; } = Guid.NewGuid();` for primary keys
 - `required` keyword for non-nullable properties
-- EF configuration via `IEntityTypeConfiguration<T>` in `Infrastructure/Persistence/`
+- EF configuration via `IEntityTypeConfiguration<T>` in `Infrastructure/`
 
 Example from `Tag.cs`:
 ```csharp
@@ -102,14 +109,14 @@ public class Tag
 
 ### Service Input Records
 
-Service inputs are **immutable records** in `Services/[Feature]/Inputs/`:
+Service inputs are **immutable records** in `Logic/Inputs/`:
 ```csharp
 public record CreateTagInput(string Title);
 ```
 
 ### Controller Patterns
 
-Controllers in `Web/Controllers/`:
+Controllers in `Features/[Feature]/Controllers/`:
 - Use constructor injection for services
 - Map HTTP requests to service inputs
 - Use `[CheckAuth(Role.Admin, Role.Moderator)]` for role-based authorization
@@ -129,7 +136,7 @@ public async Task<IActionResult> Create([FromBody] CreateTagRequest req)
 
 ### Exception Handling
 
-Custom exceptions in `Core.Common.Application.Exceptions/`:
+Custom exceptions in `App.Common.Logic.Exceptions/`:
 - `NoSuch` → mapped to 404 in `StatusCodesConfiguration.cs`
 - Uses `Hellang.Middleware.ProblemDetails` for RFC 7807 responses
 
@@ -144,7 +151,7 @@ Integration tests inherit from `TestBase<TService>`:
 
 `Program.cs` uses extension methods for setup:
 - `builder.SetUpOptions()` - Configuration binding
-- `builder.Services.SetUpCore()` - Core dependencies
+- `builder.Services.SetUpCommon()` - Core dependencies
 - `builder.Services.SetUpOpenApi()` - Swagger/Scalar
 - `builder.Services.SetUpAuth()` - ASP.NET Identity
 
