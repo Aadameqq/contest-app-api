@@ -1,14 +1,16 @@
 using System.Text.Json.Serialization;
+using App.Common;
 using App.Configurations;
+using App.Features;
 using App.Identity;
 using App.OpenApi;
-using Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.SetUpOptions();
 builder.SetUpStatusCodes();
-builder.Services.SetUpCore();
+builder.Services.SetUpCommon();
+builder.Services.SetUpFeatures();
 builder.Services.AddControllers();
 
 builder.Services.SetUpOpenApi();
