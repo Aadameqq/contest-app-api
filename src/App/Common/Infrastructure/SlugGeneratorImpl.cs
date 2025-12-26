@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Core.Problems.Application.Ports;
 
-namespace App.Common;
+namespace App.Common.Infrastructure;
 
 public class SlugGeneratorImpl : SlugGenerator
 {

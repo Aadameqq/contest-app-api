@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace App.Common;
+namespace App.Common.Infrastructure.Options;
 
 public class DatabaseOptions
 {

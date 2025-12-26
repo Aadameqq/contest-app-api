@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace App.Common;
+namespace App.Common.Infrastructure.Persistence;
 
 public class AppDbContext(IOptions<DatabaseOptions> databaseConfig)
 	: IdentityDbContext<IdentityUser>,
