@@ -1,3 +1,5 @@
+using App.Features.Tags.Domain;
+
 namespace App.Features.Problems.Domain;
 
 public class Problem

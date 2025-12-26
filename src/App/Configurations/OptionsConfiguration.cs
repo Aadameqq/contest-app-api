@@ -1,4 +1,4 @@
-using Core.Common.Infrastructure.Options;
+using App.Common.Infrastructure.Options;
 
 namespace App.Configurations;
 

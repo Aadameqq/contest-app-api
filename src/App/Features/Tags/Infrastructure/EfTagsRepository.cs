@@ -1,6 +1,6 @@
+using App.Common.Infrastructure.Persistence;
 using App.Features.Tags.Domain;
 using App.Features.Tags.Logic.Ports;
-using Core.Common.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Features.Tags.Infrastructure;

@@ -1,4 +1,4 @@
-using Core.Auth.Entities;
+using App.Features.Auth.Domain;
 using Microsoft.AspNetCore.Authorization;
 
 namespace App.Identity;

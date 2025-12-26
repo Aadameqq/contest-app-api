@@ -1,6 +1,6 @@
+using App.Common.Infrastructure.Persistence;
 using App.Features.Problems.Domain;
 using App.Features.Problems.Logic.Ports;
-using Core.Common.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Features.Problems.Infrastructure;

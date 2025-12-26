@@ -1,8 +1,9 @@
-using App.Common.Logic.Exceptions;
 using App.Common.Infrastructure.Persistence;
+using App.Common.Logic.Exceptions;
+using App.Features.Problems.Domain;
 using App.Features.Problems.Logic;
 using App.Features.Problems.Logic.Inputs;
-using App.Features.Problems.Domain;
+using App.Features.Tags.Domain;
 using Shouldly;
 
 namespace IntegrationTests.Problems;

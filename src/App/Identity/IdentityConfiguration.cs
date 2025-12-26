@@ -1,4 +1,4 @@
-using Core.Common.Infrastructure.Persistence;
+using App.Common.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 
 namespace App.Identity;

@@ -1,9 +1,9 @@
+using App.Features.Auth.Domain;
 using App.Features.Tags.Controllers.Requests;
 using App.Features.Tags.Domain;
 using App.Features.Tags.Logic;
 using App.Features.Tags.Logic.Inputs;
 using App.Identity;
-using Core.Auth.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Features.Tags.Controllers;

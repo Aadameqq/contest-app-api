@@ -1,4 +1,4 @@
-using Core.Common.Application.Exceptions;
+using App.Common.Logic.Exceptions;
 using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
 
