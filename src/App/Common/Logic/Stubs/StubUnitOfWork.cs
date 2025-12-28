@@ -5,22 +5,33 @@ namespace App.Common.Logic.Stubs;
 
 public class StubUnitOfWork : UnitOfWork
 {
-	private readonly OutputTracker<TrackerEvent> tracker = new();
+	private Action<string> trackBehaviour;
+	private readonly OutputTracker<TrackerEvent<object>>? tracker = null;
+
+	public StubUnitOfWork()
+	{
+		tracker = new();
+		trackBehaviour = tracker.TrackBehaviour;
+	}
+
+	public StubUnitOfWork(Action<string> func)
+	{
+		trackBehaviour = func;
+	}
+
+	public void SetCustomTrackerFunc(Action<string> func)
+	{
+		trackBehaviour = func;
+	}
 
 	public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 	{
-		tracker.Track(new TrackerEvent { Behavior = "save-changes" });
-		// Return 1 to simulate successful save
+		trackBehaviour("save-changes");
 		return Task.FromResult(1);
 	}
 
-	public OutputTracker<TrackerEvent> GetTracker()
+	public OutputTracker<TrackerEvent<object>>? GetTracker()
 	{
 		return tracker;
-	}
-
-	public class TrackerEvent
-	{
-		public required string Behavior { get; set; }
 	}
 }

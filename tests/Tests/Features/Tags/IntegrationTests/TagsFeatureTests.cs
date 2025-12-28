@@ -9,7 +9,7 @@ using Tests.Tools.IntegrationTests;
 namespace Tests.Features.Tags.IntegrationTests;
 
 [Collection("IntegrationTests")]
-public class TagsServiceTests(TestWebApplicationFactory factory)
+public class TagsFeatureTests(TestWebApplicationFactory factory)
 	: IntegrationTestBase<TagsService>(factory)
 {
 	private readonly Tag testTag = new() { Title = "Test Tag", Slug = "test-tag" };

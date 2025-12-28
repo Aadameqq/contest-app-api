@@ -1,16 +1,23 @@
+using App.Common.Logic;
+
 namespace App.Features.Tags.Logic;
 
 public class OutputTracker<T>
 	where T : class
 {
-	private List<T> tracked = [];
+	private List<TrackerEvent<T>> tracked = [];
 
-	public void Track(T item)
+	public void Track(TrackerEvent<T> trackerEvent)
 	{
-		tracked.Add(item);
+		tracked.Add(trackerEvent);
 	}
 
-	public List<T> GetOutput()
+	public void TrackBehaviour(string behavior)
+	{
+		tracked.Add(new TrackerEvent<T> { Behavior = behavior });
+	}
+
+	public List<TrackerEvent<T>> GetOutput()
 	{
 		return tracked.AsReadOnly().ToList();
 	}
