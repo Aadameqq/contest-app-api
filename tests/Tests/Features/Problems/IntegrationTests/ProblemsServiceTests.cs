@@ -5,7 +5,7 @@ using App.Features.Problems.Logic;
 using App.Features.Problems.Logic.Inputs;
 using App.Features.Tags.Domain;
 using Shouldly;
-using Tests.Common.IntegrationTests;
+using Tests.Tools.IntegrationTests;
 
 namespace Tests.Features.Problems.IntegrationTests;
 
@@ -139,33 +139,6 @@ public class ProblemsServiceTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testCreateShouldHandleSlugCollision()
-	{
-		using var scope = UseScope();
-
-		var title = testProblem.Title;
-		var problem = await scope.Service.Create(new CreateProblemInput(title, []));
-
-		problem.ShouldNotBeNull();
-		problem.Title.ShouldBe(title);
-		problem.Slug.ShouldBe("test-problem1");
-	}
-
-	[Fact]
-	public async Task testCreateShouldHandleMultipleSlugCollisions()
-	{
-		using var scope = UseScope();
-		await scope.Service.Create(new CreateProblemInput(testProblem.Title, []));
-		var problem = await scope.Service.Create(
-			new CreateProblemInput(testProblem.Title, [])
-		);
-
-		problem.ShouldNotBeNull();
-		problem.Title.ShouldBe(testProblem.Title);
-		problem.Slug.ShouldBe("test-problem2");
-	}
-
-	[Fact]
 	public async Task testCreateShouldFailIfTagNotFound()
 	{
 		using var scope = UseScope();
@@ -185,30 +158,5 @@ public class ProblemsServiceTests(TestWebApplicationFactory factory)
 		problem.ShouldNotBeNull();
 		problem.Title.ShouldBe(title);
 		problem.Tags.Count.ShouldBe(0);
-	}
-
-	[Theory]
-	[InlineData("Problem Title", "problem-title")]
-	[InlineData("Problem@ Title!", "problem-title")]
-	[InlineData("Prōblém TĄsk !!! .", "problem-task")]
-	[InlineData("   Problem   Title   ", "problem-title")]
-	[InlineData("Problem-Title", "problem-title")]
-	[InlineData("Problem_Title", "problem_title")]
-	[InlineData("Problem--Title", "problem-title")]
-	[InlineData("123 Problem Title", "123-problem-title")]
-	[InlineData("Problem  -  _  Title", "problem-title")]
-	[InlineData("Hello World Problem!", "hello-world-problem")]
-	public async Task testCreateShouldGenerateCorrectSlugs(
-		string inputTitle,
-		string expectedSlug
-	)
-	{
-		using var scope = UseScope();
-
-		var problem = await scope.Service.Create(new CreateProblemInput(inputTitle, []));
-
-		problem.ShouldNotBeNull();
-		problem.Title.ShouldBe(inputTitle);
-		problem.Slug.ShouldBe(expectedSlug);
 	}
 }

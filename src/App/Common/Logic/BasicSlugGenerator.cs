@@ -5,11 +5,11 @@ using App.Common.Logic.Ports;
 
 namespace App.Common.Infrastructure;
 
-public class SlugGeneratorImpl : SlugGenerator
+public class BasicSlugifier : Slugifier
 {
-	public string Generate(string title)
+	public string Slugify(string text)
 	{
-		var slug = RemoveAccent(title.ToLowerInvariant());
+		var slug = RemoveAccent(text.ToLowerInvariant());
 		slug = Regex.Replace(slug, @"\s", "-", RegexOptions.Compiled);
 		slug = Regex.Replace(slug, @"[^a-z0-9-_]", "", RegexOptions.Compiled);
 		slug = slug.Trim('-', '_');

@@ -1,4 +1,4 @@
-namespace Tests.Common.IntegrationTests;
+namespace Tests.Tools.IntegrationTests;
 
 [CollectionDefinition("IntegrationTests")]
 public class IntegrationTestsCollection

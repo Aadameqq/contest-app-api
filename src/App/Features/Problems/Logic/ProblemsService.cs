@@ -10,7 +10,7 @@ using App.Features.Tags.Logic.Ports;
 namespace App.Features.Problems.Logic;
 
 public class ProblemsService(
-	SlugGenerator slugGenerator,
+	Slugifier slugGenerator,
 	TagsRepository tagsRepository,
 	ProblemsRepository problemsRepository,
 	UnitOfWork uow
@@ -18,7 +18,7 @@ public class ProblemsService(
 {
 	public async Task<Problem> Create(CreateProblemInput input)
 	{
-		var baseSlug = slugGenerator.Generate(input.Title);
+		var baseSlug = slugGenerator.Slugify(input.Title);
 
 		var index = 0;
 		var slug = baseSlug;

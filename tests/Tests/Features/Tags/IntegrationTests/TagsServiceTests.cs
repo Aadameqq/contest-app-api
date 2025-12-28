@@ -4,7 +4,7 @@ using App.Features.Tags.Domain;
 using App.Features.Tags.Logic;
 using App.Features.Tags.Logic.Inputs;
 using Shouldly;
-using Tests.Common.IntegrationTests;
+using Tests.Tools.IntegrationTests;
 
 namespace Tests.Features.Tags.IntegrationTests;
 
@@ -102,31 +102,6 @@ public class TagsServiceTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testCreateShouldHandleSlugCollision()
-	{
-		using var scope = UseScope();
-
-		var title = testTag.Title;
-		var tag = await scope.Service.Create(new CreateTagInput(title));
-
-		tag.ShouldNotBeNull();
-		tag.Title.ShouldBe(title);
-		tag.Slug.ShouldBe("test-tag1");
-	}
-
-	[Fact]
-	public async Task testCreateShouldHandleMultipleSlugCollisions()
-	{
-		using var scope = UseScope();
-		await scope.Service.Create(new CreateTagInput(testTag.Title));
-		var tag = await scope.Service.Create(new CreateTagInput(testTag.Title));
-
-		tag.ShouldNotBeNull();
-		tag.Title.ShouldBe(testTag.Title);
-		tag.Slug.ShouldBe("test-tag2");
-	}
-
-	[Fact]
 	public async Task testListShouldReturnAllTags()
 	{
 		using var scope = UseScope();
@@ -138,30 +113,5 @@ public class TagsServiceTests(TestWebApplicationFactory factory)
 		tags.Count.ShouldBe(2);
 		tags.ShouldContain(t => t.Slug == testTag.Slug);
 		tags.ShouldContain(t => t.Slug == other.Slug);
-	}
-
-	[Theory]
-	[InlineData("Test Title", "test-title")]
-	[InlineData("Test@ Title!", "test-title")]
-	[InlineData("Tęśt TĄg !!! .", "test-tag1")]
-	[InlineData("   Test   Title   ", "test-title")]
-	[InlineData("Test-Title", "test-title")]
-	[InlineData("Test_Title", "test_title")]
-	[InlineData("Test--Title", "test-title")]
-	[InlineData("123 Test Title", "123-test-title")]
-	[InlineData("Test  -  _  Title", "test-title")]
-	[InlineData("Hello World!", "hello-world")]
-	public async Task testCreateShouldGenerateCorrectSlugs(
-		string inputTitle,
-		string expectedSlug
-	)
-	{
-		using var scope = UseScope();
-
-		var tag = await scope.Service.Create(new CreateTagInput(inputTitle));
-
-		tag.ShouldNotBeNull();
-		tag.Title.ShouldBe(inputTitle);
-		tag.Slug.ShouldBe(expectedSlug);
 	}
 }

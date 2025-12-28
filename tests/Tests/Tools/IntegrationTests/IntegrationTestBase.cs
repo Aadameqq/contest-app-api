@@ -2,7 +2,7 @@ using App.Common.Infrastructure.Persistence;
 using App.Common.Logic;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Tests.Common.IntegrationTests;
+namespace Tests.Tools.IntegrationTests;
 
 public abstract class IntegrationTestBase<T>(TestWebApplicationFactory factory)
 	: IAsyncLifetime

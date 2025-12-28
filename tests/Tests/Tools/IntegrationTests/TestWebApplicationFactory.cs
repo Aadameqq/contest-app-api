@@ -8,7 +8,7 @@ using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
 
-namespace Tests.Common.IntegrationTests;
+namespace Tests.Tools.IntegrationTests;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {

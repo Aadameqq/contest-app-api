@@ -1,7 +1,9 @@
 using App.Common.Logic;
 using App.Common.Logic.Exceptions;
 using App.Common.Logic.Ports;
+using App.Common.Logic.Stubs;
 using App.Features.Tags.Domain;
+using App.Features.Tags.Infrastructure;
 using App.Features.Tags.Logic.Inputs;
 using App.Features.Tags.Logic.Ports;
 
@@ -13,17 +15,17 @@ public class TagsService(
 	UnitOfWork uow
 ) : Service
 {
+	public static TagsService CreateNull(List<Tag>? existingTags = null)
+	{
+		var slugGen = SlugGenerator.CreateNull();
+		var repo = new StubTagsRepository(existingTags ?? [Tag.CreateTestInstance()]);
+		var uow = new StubUnitOfWork();
+		return new TagsService(slugGen, repo, uow);
+	}
+
 	public async Task<Tag> Create(CreateTagInput input)
 	{
-		var baseSlug = slugGenerator.Generate(input.Title);
-
-		var index = 0;
-		var slug = baseSlug;
-
-		while (await tagsRepository.Exists(slug))
-		{
-			slug = $"{baseSlug}{++index}";
-		}
+		var slug = await slugGenerator.Generate(input.Title, tagsRepository.Exists);
 
 		var tag = new Tag { Title = input.Title, Slug = slug };
 
