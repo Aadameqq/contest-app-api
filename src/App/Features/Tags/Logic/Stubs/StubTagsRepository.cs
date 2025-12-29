@@ -1,7 +1,7 @@
-using App.Common.Logic;
 using App.Features.Tags.Domain;
 using App.Features.Tags.Logic;
 using App.Features.Tags.Logic.Ports;
+using App.Features.Tags.Logic.Stubs;
 
 namespace App.Features.Tags.Infrastructure;
 
@@ -9,7 +9,7 @@ public class StubTagsRepository : TagsRepository
 {
 	private List<Tag> existing = [];
 
-	private readonly OutputTracker<Tag> tracker = new();
+	private readonly OutputTracker<TagsTrackerEvent> tracker = new();
 
 	public StubTagsRepository(List<Tag>? existingTags)
 	{
@@ -21,13 +21,13 @@ public class StubTagsRepository : TagsRepository
 
 	public Task Create(Tag tag)
 	{
-		tracker.Track(new TrackerEvent<Tag> { Behavior = "create", Subject = tag });
+		tracker.Track(TagsTrackerEvent.InitCreatedEvent(tag));
 		return Task.CompletedTask;
 	}
 
 	public Task Delete(Tag tag)
 	{
-		tracker.Track(new TrackerEvent<Tag> { Behavior = "delete", Subject = tag });
+		tracker.Track(TagsTrackerEvent.InitDeletedEvent(tag));
 		return Task.CompletedTask;
 	}
 
@@ -48,11 +48,11 @@ public class StubTagsRepository : TagsRepository
 
 	public Task Update(Tag tag)
 	{
-		tracker.Track(new TrackerEvent<Tag> { Behavior = "update", Subject = tag });
+		tracker.Track(TagsTrackerEvent.InitUpdatedEvent(tag));
 		return Task.CompletedTask;
 	}
 
-	public OutputTracker<Tag> GetTracker()
+	public OutputTracker<TagsTrackerEvent> GetTracker()
 	{
 		return tracker;
 	}

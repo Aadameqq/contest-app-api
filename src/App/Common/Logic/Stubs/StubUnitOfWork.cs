@@ -1,37 +1,23 @@
 using App.Common.Logic.Ports;
+using App.Features.Common.Logic.Ports;
 using App.Features.Tags.Logic;
 
 namespace App.Common.Logic.Stubs;
 
 public class StubUnitOfWork : UnitOfWork
 {
-	private Action<string> trackBehaviour;
-	private readonly OutputTracker<TrackerEvent<object>>? tracker = null;
+	private readonly Commitable? commitable;
 
-	public StubUnitOfWork()
+	public StubUnitOfWork(Commitable commitable)
 	{
-		tracker = new();
-		trackBehaviour = tracker.TrackBehaviour;
+		this.commitable = commitable;
 	}
 
-	public StubUnitOfWork(Action<string> func)
-	{
-		trackBehaviour = func;
-	}
-
-	public void SetCustomTrackerFunc(Action<string> func)
-	{
-		trackBehaviour = func;
-	}
+	public StubUnitOfWork() { }
 
 	public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 	{
-		trackBehaviour("save-changes");
+		commitable?.Commit();
 		return Task.FromResult(1);
-	}
-
-	public OutputTracker<TrackerEvent<object>>? GetTracker()
-	{
-		return tracker;
 	}
 }

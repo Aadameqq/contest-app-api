@@ -5,6 +5,7 @@ using App.Features.Tags.Domain;
 using App.Features.Tags.Infrastructure;
 using App.Features.Tags.Logic;
 using App.Features.Tags.Logic.Inputs;
+using App.Features.Tags.Logic.Stubs;
 using Shouldly;
 
 namespace Tests.Features.Tags.UnitTests;
@@ -23,10 +24,9 @@ public class TagsServiceTests
 
 		tag.Title.ShouldBe("Existing Tag");
 		tag.Slug.ShouldBe("existing-tag-1");
-		var createEvents = GetTrackedTagsByBehavior(tracker, "create");
+		var createEvents = GetCreatedTags(tracker);
 		createEvents.Count.ShouldBe(1);
 		createEvents.First().ShouldBeEquivalentTo(tag);
-		ShouldPersist(tracker);
 	}
 
 	[Fact]
@@ -56,10 +56,9 @@ public class TagsServiceTests
 		await Should.NotThrowAsync(async () =>
 		{
 			await RunDelete(out var tracker, slug);
-			var deleteEvents = GetTrackedTagsByBehavior(tracker, "delete");
+			var deleteEvents = GetDeletedTags(tracker);
 			deleteEvents.Count.ShouldBe(1);
 			deleteEvents.First().ShouldBeEquivalentTo(existingTags[0]);
-			ShouldPersist(tracker);
 		});
 	}
 
@@ -73,7 +72,7 @@ public class TagsServiceTests
 	}
 
 	private Task<Tag> RunCreate(
-		out OutputTracker<Tag> outputTracker,
+		out OutputTracker<TagsTrackerEvent> outputTracker,
 		string title = "Test Tag"
 	)
 	{
@@ -88,7 +87,7 @@ public class TagsServiceTests
 	}
 
 	private Task RunDelete(
-		out OutputTracker<Tag> outputTracker,
+		out OutputTracker<TagsTrackerEvent> outputTracker,
 		string title = "Test Tag"
 	)
 	{
@@ -96,34 +95,39 @@ public class TagsServiceTests
 		return service.Delete(new FindTagInput(title));
 	}
 
-	private TagsService CreateServiceWithTracker(out OutputTracker<Tag> outputTracker)
+	private TagsService CreateServiceWithTracker(
+		out OutputTracker<TagsTrackerEvent> outputTracker
+	)
 	{
 		var slugGen = SlugGenerator.CreateNull();
 
 		var repo = new StubTagsRepository(existingTags);
 		outputTracker = repo.GetTracker();
 
-		var uow = new StubUnitOfWork(outputTracker.TrackBehaviour);
+		var uow = new StubUnitOfWork(outputTracker);
 
 		return new TagsService(slugGen, repo, uow);
 	}
 
-	private List<Tag?> GetTrackedTagsByBehavior(
-		OutputTracker<Tag> tracker,
-		string behavior
+	private List<Tag> GetCreatedTags(OutputTracker<TagsTrackerEvent> tracker)
+	{
+		return GetTrackedTagsByEventType(tracker, TagsTrackerEvent.EventType.Created);
+	}
+
+	private List<Tag> GetDeletedTags(OutputTracker<TagsTrackerEvent> tracker)
+	{
+		return GetTrackedTagsByEventType(tracker, TagsTrackerEvent.EventType.Deleted);
+	}
+
+	private List<Tag> GetTrackedTagsByEventType(
+		OutputTracker<TagsTrackerEvent> tracker,
+		TagsTrackerEvent.EventType type
 	)
 	{
 		return tracker
 			.GetOutput()
-			.Where(e => e.Behavior == behavior)
-			.Select(e => e.Subject)
+			.Where(e => e.Type == type)
+			.Select(e => e.Payload)
 			.ToList();
-	}
-
-	private void ShouldPersist(OutputTracker<Tag> tracker)
-	{
-		var events = tracker.GetOutput();
-		events.Last().ShouldNotBeNull();
-		events.Last().Behavior.ShouldBe("save-changes");
 	}
 }

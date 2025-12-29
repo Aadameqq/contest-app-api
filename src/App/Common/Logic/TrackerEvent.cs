@@ -1,8 +1,12 @@
 namespace App.Common.Logic;
 
-public class TrackerEvent<T>
-	where T : class
+public abstract class TrackerEvent
 {
-	public required string Behavior { get; set; }
-	public T? Subject { get; set; } = null;
+	public bool IsTransactional { get; private set; }
+	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+	protected TrackerEvent(bool isTransactional)
+	{
+		IsTransactional = isTransactional;
+	}
 }

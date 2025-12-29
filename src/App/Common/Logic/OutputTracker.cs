@@ -1,23 +1,32 @@
 using App.Common.Logic;
+using App.Features.Common.Logic.Ports;
 
 namespace App.Features.Tags.Logic;
 
-public class OutputTracker<T>
-	where T : class
+public class OutputTracker<T> : Commitable
+	where T : TrackerEvent
 {
-	private List<TrackerEvent<T>> tracked = [];
+	private List<T> tracked = [];
+	private List<T> transaction = [];
 
-	public void Track(TrackerEvent<T> trackerEvent)
+	public void Track(T trackerEvent)
 	{
+		if (trackerEvent.IsTransactional)
+		{
+			transaction.Add(trackerEvent);
+			return;
+		}
 		tracked.Add(trackerEvent);
 	}
 
-	public void TrackBehaviour(string behavior)
+	public void Commit()
 	{
-		tracked.Add(new TrackerEvent<T> { Behavior = behavior });
+		tracked.AddRange(transaction);
+		tracked.Sort((a, b) => a.CreatedAt.CompareTo(b.CreatedAt));
+		transaction.Clear();
 	}
 
-	public List<TrackerEvent<T>> GetOutput()
+	public List<T> GetOutput()
 	{
 		return tracked.AsReadOnly().ToList();
 	}
