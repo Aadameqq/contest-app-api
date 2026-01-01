@@ -1,0 +1,38 @@
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
+using App.Common.Logic.Ports;
+
+namespace App.Common.Infrastructure;
+
+public class BasicSlugifier : Slugifier
+{
+	public string Slugify(string text)
+	{
+		var slug = RemoveAccent(text.ToLowerInvariant());
+		slug = Regex.Replace(slug, @"\s", "-", RegexOptions.Compiled);
+		slug = Regex.Replace(slug, @"[^a-z0-9-_]", "", RegexOptions.Compiled);
+		slug = slug.Trim('-', '_');
+		return Regex.Replace(slug, @"([-_]){2,}", "$1", RegexOptions.Compiled);
+	}
+
+	private static string RemoveAccent(string title)
+	{
+		if (string.IsNullOrEmpty(title))
+			return title;
+
+		var normalized = title.Normalize(NormalizationForm.FormD);
+		var sb = new StringBuilder();
+
+		foreach (var c in normalized)
+		{
+			var category = CharUnicodeInfo.GetUnicodeCategory(c);
+			if (category != UnicodeCategory.NonSpacingMark)
+			{
+				sb.Append(c);
+			}
+		}
+
+		return sb.ToString().Normalize(NormalizationForm.FormC);
+	}
+}

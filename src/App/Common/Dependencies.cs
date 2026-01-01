@@ -1,5 +1,6 @@
 using App.Common.Infrastructure;
 using App.Common.Infrastructure.Persistence;
+using App.Common.Logic;
 using App.Common.Logic.Ports;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +12,8 @@ public static class Dependencies
 	{
 		services.AddDbContext<AppDbContext>();
 
-		services.AddSingleton<SlugGenerator, SlugGeneratorImpl>();
-
+		services.AddScoped<SlugGenerator, SlugGenerator>();
+		services.AddSingleton<Slugifier, BasicSlugifier>();
 		services.AddScoped<UnitOfWork>(c => c.GetRequiredService<AppDbContext>());
 	}
 }

@@ -1,24 +1,42 @@
+using App.Common.Infrastructure;
 using App.Common.Logic;
 using App.Common.Logic.Exceptions;
 using App.Common.Logic.Ports;
+using App.Common.Logic.Stubs;
 using App.Features.Problems.Domain;
 using App.Features.Problems.Logic.Inputs;
 using App.Features.Problems.Logic.Ports;
+using App.Features.Problems.Logic.Stubs;
 using App.Features.Tags.Domain;
 using App.Features.Tags.Logic.Ports;
+using App.Features.Tags.Logic.Stubs;
 
 namespace App.Features.Problems.Logic;
 
 public class ProblemsService(
-	SlugGenerator slugGenerator,
+	Slugifier slugGenerator,
 	TagsRepository tagsRepository,
 	ProblemsRepository problemsRepository,
 	UnitOfWork uow
 ) : Service
 {
+	public static ProblemsService CreateNull(
+		List<Problem>? existingProblems = null,
+		List<Tag>? existingTags = null
+	)
+	{
+		var slugifier = new BasicSlugifier();
+		var tagsRepo = new StubTagsRepository(existingTags ?? [Tag.CreateTestInstance()]);
+		var problemsRepo = new StubProblemsRepository(
+			existingProblems ?? [Problem.CreateTestInstance()]
+		);
+		var uow = new StubUnitOfWork();
+		return new ProblemsService(slugifier, tagsRepo, problemsRepo, uow);
+	}
+
 	public async Task<Problem> Create(CreateProblemInput input)
 	{
-		var baseSlug = slugGenerator.Generate(input.Title);
+		var baseSlug = slugGenerator.Slugify(input.Title);
 
 		var index = 0;
 		var slug = baseSlug;

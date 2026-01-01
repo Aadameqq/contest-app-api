@@ -1,0 +1,58 @@
+using App.Features.Tags.Domain;
+using App.Features.Tags.Logic;
+using App.Features.Tags.Logic.Ports;
+
+namespace App.Features.Tags.Logic.Stubs;
+
+public class StubTagsRepository : TagsRepository
+{
+	private List<Tag> existing = [];
+
+	private readonly OutputTracker<TagsTrackerEvent> tracker = new();
+
+	public StubTagsRepository(List<Tag>? existingTags)
+	{
+		if (existingTags is not null)
+		{
+			existing = existingTags;
+		}
+	}
+
+	public Task Create(Tag tag)
+	{
+		tracker.Track(TagsTrackerEvent.InitCreatedEvent(tag));
+		return Task.CompletedTask;
+	}
+
+	public Task Delete(Tag tag)
+	{
+		tracker.Track(TagsTrackerEvent.InitDeletedEvent(tag));
+		return Task.CompletedTask;
+	}
+
+	public Task<bool> Exists(string slug)
+	{
+		return Task.FromResult(existing.Any(t => t.Slug == slug));
+	}
+
+	public Task<Tag?> Find(string slug)
+	{
+		return Task.FromResult(existing.FirstOrDefault(t => t.Slug == slug));
+	}
+
+	public Task<List<Tag>> ListAll()
+	{
+		return Task.FromResult(existing.ToList());
+	}
+
+	public Task Update(Tag tag)
+	{
+		tracker.Track(TagsTrackerEvent.InitUpdatedEvent(tag));
+		return Task.CompletedTask;
+	}
+
+	public OutputTracker<TagsTrackerEvent> GetTracker()
+	{
+		return tracker;
+	}
+}
