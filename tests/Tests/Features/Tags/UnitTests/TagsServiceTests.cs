@@ -71,6 +71,32 @@ public class TagsServiceTests
 		});
 	}
 
+	[Fact]
+	public async Task testUpdateShouldModifyExistingTag()
+	{
+		var slug = existingTags[0].Slug;
+		var newTitle = "Updated Tag Title";
+
+		await Should.NotThrowAsync(async () =>
+		{
+			await RunUpdate(out var tracker, slug, newTitle);
+			var updateEvents = GetUpdatedTags(tracker);
+			updateEvents.Count.ShouldBe(1);
+			var updatedTag = updateEvents.First();
+			updatedTag.Title.ShouldBe(newTitle);
+			updatedTag.Slug.ShouldBe(slug); // Slug should remain unchanged
+		});
+	}
+
+	[Fact]
+	public async Task testUpdateShouldFailIfTagDoesNotExist()
+	{
+		await Should.ThrowAsync<NoSuch>(async () =>
+		{
+			await RunUpdate(out _, "non-existent-tag", "Some Title");
+		});
+	}
+
 	private Task<Tag> RunCreate(
 		out OutputTracker<TagsTrackerEvent> outputTracker,
 		string title = "Test Tag"
@@ -95,6 +121,16 @@ public class TagsServiceTests
 		return service.Delete(new FindTagInput(title));
 	}
 
+	private Task RunUpdate(
+		out OutputTracker<TagsTrackerEvent> outputTracker,
+		string slug,
+		string newTitle
+	)
+	{
+		var service = CreateServiceWithTracker(out outputTracker);
+		return service.Update(new UpdateTagInput(slug, newTitle));
+	}
+
 	private TagsService CreateServiceWithTracker(
 		out OutputTracker<TagsTrackerEvent> outputTracker
 	)
@@ -117,6 +153,11 @@ public class TagsServiceTests
 	private List<Tag> GetDeletedTags(OutputTracker<TagsTrackerEvent> tracker)
 	{
 		return GetTrackedTagsByEventType(tracker, TagsTrackerEvent.EventType.Deleted);
+	}
+
+	private List<Tag> GetUpdatedTags(OutputTracker<TagsTrackerEvent> tracker)
+	{
+		return GetTrackedTagsByEventType(tracker, TagsTrackerEvent.EventType.Updated);
 	}
 
 	private List<Tag> GetTrackedTagsByEventType(

@@ -142,10 +142,96 @@ Custom exceptions in `App.Common.Logic.Exceptions/`:
 
 ### Testing
 
-Integration tests inherit from `TestBase<TService>`:
-- Override `Seed(AppDbContext ctx)` for test data
-- Use `UseScope()` to get scoped services
-- Database reset after each test via `ResetDatabase()`
+The project uses **xUnit** for testing with two distinct testing approaches:
+
+#### Test Structure
+
+Tests are organized in `tests/Tests/` with the following structure:
+
+```
+tests/Tests/
+├── Features/                    # Feature-specific tests
+│   ├── [Feature]/
+│   │   ├── IntegrationTests/    # Full-stack tests with real database
+│   │   └── UnitTests/           # Isolated unit tests with stubs
+├── Tools/
+│   ├── IntegrationTests/        # Integration test infrastructure
+│   ├── UnitTests/               # Unit test utilities
+│   └── OutputTracking/          # Test output tracking utilities
+└── Common/                      # Shared test utilities
+```
+
+#### Integration Tests
+
+Integration tests inherit from `IntegrationTestBase<TService>` and test features end-to-end:
+
+- **Database**: Uses `TestWebApplicationFactory` with real PostgreSQL database
+- **Seeding**: Override `Seed(AppDbContext ctx)` for test data setup
+- **Scoping**: Use `UseScope()` to get scoped services and database context
+- **Cleanup**: Database automatically reset after each test via `ResetDatabase()`
+- **Collection**: Marked with `[Collection("IntegrationTests")]` for proper test isolation
+
+Example integration test:
+```csharp
+[Collection("IntegrationTests")]
+public class TagsFeatureTests(TestWebApplicationFactory factory)
+    : IntegrationTestBase<TagsService>(factory)
+{
+    protected override async Task Seed(AppDbContext ctx)
+    {
+        await ctx.Tags.AddAsync(new Tag { Title = "Test", Slug = "test" });
+    }
+
+    [Fact]
+    public async Task testFind()
+    {
+        using var scope = UseScope();
+        var result = await scope.Service.Find(new FindTagInput("test"));
+        result.ShouldNotBeNull();
+    }
+}
+```
+
+#### Unit Tests
+
+Unit tests use **stub implementations** for isolated testing:
+
+- **Stubs**: Located in each feature's `Logic/Stubs/` directory (e.g., `StubTagsRepository`)
+- **Output Tracking**: Use `OutputTracker<T>` to verify repository operations
+- **Test Data**: Use in-memory collections for predictable test scenarios
+- **Service Creation**: Manually wire dependencies with stubs and trackers
+
+Example unit test:
+```csharp
+public class TagsServiceTests
+{
+    private readonly List<Tag> existingTags = [/* test data */];
+
+    [Fact] 
+    public async Task testCreate()
+    {
+        var service = CreateServiceWithTracker(out var tracker);
+        var tag = await service.Create(new CreateTagInput("New Tag"));
+        
+        var createdTags = GetCreatedTags(tracker);
+        createdTags.Count.ShouldBe(1);
+    }
+
+    private TagsService CreateServiceWithTracker(out OutputTracker<TagsTrackerEvent> tracker)
+    {
+        var repo = new StubTagsRepository(existingTags);
+        tracker = repo.GetTracker();
+        return new TagsService(SlugGenerator.CreateNull(), repo, new StubUnitOfWork(tracker));
+    }
+}
+```
+
+#### Test Utilities
+
+- **Shouldly**: Preferred assertion library for fluent assertions
+- **Global Usings**: xUnit globally imported via `GlobalUsings.cs`
+- **Output Tracking**: Custom tracking system to verify stub operations
+- **Null Services**: Services provide `CreateNull()` methods for testing
 
 ## Web Layer Configuration
 
