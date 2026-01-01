@@ -201,6 +201,27 @@ Unit tests use **stub implementations** for isolated testing:
 - **Test Data**: Use in-memory collections for predictable test scenarios
 - **Service Creation**: Manually wire dependencies with stubs and trackers
 
+##### Unit Testing Principles
+
+Follow these core principles when writing unit tests:
+
+1. **Test Responsibility, Not Implementation**: Tests should verify the behavior and responsibility of the tested service, not the internal implementation details of dependencies.
+
+2. **Contract Testing**: Test the contract with dependencies to catch important API changes, but avoid creating brittle tests that break with minor implementation changes.
+
+3. **Focus Areas**: Concentrate testing efforts on:
+   - Business logic and domain rules
+   - Service orchestration between dependencies
+   - Data mapping and transformations
+   - Error handling and edge cases
+
+4. **Repository Stub Behavior**: In stub repository implementations:
+   - Mutating methods (Create, Update, Delete) should **only** add events to the tracker
+   - **Do not** modify the underlying data collections in stubs
+   - Let the test setup define the initial state through collections
+
+5. **Test Data Access**: Use direct references to collection elements in tests (e.g., `existingTags[0].Slug`) instead of creating additional constants or helper properties.
+
 Example unit test:
 ```csharp
 public class TagsServiceTests
@@ -248,3 +269,4 @@ public class TagsServiceTests
 - Service methods should be async and accept `CancellationToken` where applicable
 - Use primary constructors for dependency injection (C# 12 feature)
 - OpenAPI docs available at `/docs` (Scalar UI)
+- **Avoid code comments**—use them only when absolutely necessary (which is rare). Focus on writing self-documenting code with clear naming and structure

@@ -1,9 +1,8 @@
 using App.Features.Tags.Domain;
 using App.Features.Tags.Logic;
 using App.Features.Tags.Logic.Ports;
-using App.Features.Tags.Logic.Stubs;
 
-namespace App.Features.Tags.Infrastructure;
+namespace App.Features.Tags.Logic.Stubs;
 
 public class StubTagsRepository : TagsRepository
 {

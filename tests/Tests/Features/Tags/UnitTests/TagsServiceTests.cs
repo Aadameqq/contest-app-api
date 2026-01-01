@@ -2,7 +2,6 @@ using App.Common.Logic;
 using App.Common.Logic.Exceptions;
 using App.Common.Logic.Stubs;
 using App.Features.Tags.Domain;
-using App.Features.Tags.Infrastructure;
 using App.Features.Tags.Logic;
 using App.Features.Tags.Logic.Inputs;
 using App.Features.Tags.Logic.Stubs;
@@ -12,6 +11,8 @@ namespace Tests.Features.Tags.UnitTests;
 
 public class TagsServiceTests
 {
+	private OutputTracker<TagsTrackerEvent>? tracker;
+
 	private readonly List<Tag> existingTags =
 	[
 		new() { Title = "Existing Tag", Slug = "existing-tag" },
@@ -20,25 +21,30 @@ public class TagsServiceTests
 	[Fact]
 	public async Task testCreateShouldGenerateUniqueSlugAndCreateTag()
 	{
-		var tag = await RunCreate(out var tracker, "Existing Tag");
+		var existingTitle = existingTags[0].Title;
 
-		tag.Title.ShouldBe("Existing Tag");
-		tag.Slug.ShouldBe("existing-tag-1");
-		var createEvents = GetCreatedTags(tracker);
-		createEvents.Count.ShouldBe(1);
-		createEvents.First().ShouldBeEquivalentTo(tag);
+		await Should.NotThrowAsync(async () =>
+		{
+			var tag = await RunCreate(existingTitle);
+
+			tag.Title.ShouldBe(existingTitle);
+			tag.Slug.ShouldBe("existing-tag-1");
+			var createEvents = GetCreatedTags();
+			createEvents.Count.ShouldBe(1);
+			createEvents.First().ShouldBeEquivalentTo(tag);
+		});
 	}
 
 	[Fact]
 	public async Task testFindShouldReturnExistingTag()
 	{
-		var slug = existingTags[0].Slug;
+		var tag = existingTags[0];
 
 		await Should.NotThrowAsync(async () =>
 		{
-			var found = await RunFind(slug);
+			var found = await RunFind(tag.Slug);
 			found.ShouldNotBeNull();
-			found.ShouldBeEquivalentTo(existingTags[0]);
+			found.ShouldBeEquivalentTo(tag);
 		});
 	}
 
@@ -51,14 +57,14 @@ public class TagsServiceTests
 	[Fact]
 	public async Task testDeleteShouldRemoveExistingTag()
 	{
-		var slug = existingTags[0].Slug;
+		var tag = existingTags[0];
 
 		await Should.NotThrowAsync(async () =>
 		{
-			await RunDelete(out var tracker, slug);
-			var deleteEvents = GetDeletedTags(tracker);
+			await RunDelete(tag.Slug);
+			var deleteEvents = GetDeletedTags();
 			deleteEvents.Count.ShouldBe(1);
-			deleteEvents.First().ShouldBeEquivalentTo(existingTags[0]);
+			deleteEvents.First().ShouldBeEquivalentTo(tag);
 		});
 	}
 
@@ -67,7 +73,7 @@ public class TagsServiceTests
 	{
 		await Should.ThrowAsync<NoSuch>(async () =>
 		{
-			await RunDelete(out _, "non-existent-tag");
+			await RunDelete("non-existent-tag");
 		});
 	}
 
@@ -79,12 +85,12 @@ public class TagsServiceTests
 
 		await Should.NotThrowAsync(async () =>
 		{
-			await RunUpdate(out var tracker, slug, newTitle);
-			var updateEvents = GetUpdatedTags(tracker);
+			await RunUpdate(slug, newTitle);
+			var updateEvents = GetUpdatedTags();
 			updateEvents.Count.ShouldBe(1);
 			var updatedTag = updateEvents.First();
 			updatedTag.Title.ShouldBe(newTitle);
-			updatedTag.Slug.ShouldBe(slug); // Slug should remain unchanged
+			updatedTag.Slug.ShouldBe(slug);
 		});
 	}
 
@@ -93,16 +99,13 @@ public class TagsServiceTests
 	{
 		await Should.ThrowAsync<NoSuch>(async () =>
 		{
-			await RunUpdate(out _, "non-existent-tag", "Some Title");
+			await RunUpdate("non-existent-tag");
 		});
 	}
 
-	private Task<Tag> RunCreate(
-		out OutputTracker<TagsTrackerEvent> outputTracker,
-		string title = "Test Tag"
-	)
+	private Task<Tag> RunCreate(string title = "Test Tag")
 	{
-		var service = CreateServiceWithTracker(out outputTracker);
+		var service = CreateServiceWithTracker();
 		return service.Create(new CreateTagInput(title));
 	}
 
@@ -112,59 +115,54 @@ public class TagsServiceTests
 		return await service.Find(new FindTagInput(slug));
 	}
 
-	private Task RunDelete(
-		out OutputTracker<TagsTrackerEvent> outputTracker,
-		string title = "Test Tag"
-	)
+	private Task RunDelete(string slug = "test-slug")
 	{
-		var service = CreateServiceWithTracker(out outputTracker);
-		return service.Delete(new FindTagInput(title));
+		var service = CreateServiceWithTracker();
+		return service.Delete(new FindTagInput(slug));
 	}
 
-	private Task RunUpdate(
-		out OutputTracker<TagsTrackerEvent> outputTracker,
-		string slug,
-		string newTitle
-	)
+	private Task RunUpdate(string slug, string newTitle = "Test Title")
 	{
-		var service = CreateServiceWithTracker(out outputTracker);
+		var service = CreateServiceWithTracker();
 		return service.Update(new UpdateTagInput(slug, newTitle));
 	}
 
-	private TagsService CreateServiceWithTracker(
-		out OutputTracker<TagsTrackerEvent> outputTracker
-	)
+	private TagsService CreateServiceWithTracker()
 	{
 		var slugGen = SlugGenerator.CreateNull();
 
 		var repo = new StubTagsRepository(existingTags);
-		outputTracker = repo.GetTracker();
+		tracker = repo.GetTracker();
 
-		var uow = new StubUnitOfWork(outputTracker);
+		var uow = new StubUnitOfWork(tracker);
 
 		return new TagsService(slugGen, repo, uow);
 	}
 
-	private List<Tag> GetCreatedTags(OutputTracker<TagsTrackerEvent> tracker)
+	private List<Tag> GetCreatedTags()
 	{
-		return GetTrackedTagsByEventType(tracker, TagsTrackerEvent.EventType.Created);
+		return GetTrackedTagsByEventType(TagsTrackerEvent.EventType.Created);
 	}
 
-	private List<Tag> GetDeletedTags(OutputTracker<TagsTrackerEvent> tracker)
+	private List<Tag> GetDeletedTags()
 	{
-		return GetTrackedTagsByEventType(tracker, TagsTrackerEvent.EventType.Deleted);
+		return GetTrackedTagsByEventType(TagsTrackerEvent.EventType.Deleted);
 	}
 
-	private List<Tag> GetUpdatedTags(OutputTracker<TagsTrackerEvent> tracker)
+	private List<Tag> GetUpdatedTags()
 	{
-		return GetTrackedTagsByEventType(tracker, TagsTrackerEvent.EventType.Updated);
+		return GetTrackedTagsByEventType(TagsTrackerEvent.EventType.Updated);
 	}
 
-	private List<Tag> GetTrackedTagsByEventType(
-		OutputTracker<TagsTrackerEvent> tracker,
-		TagsTrackerEvent.EventType type
-	)
+	private List<Tag> GetTrackedTagsByEventType(TagsTrackerEvent.EventType type)
 	{
+		if (tracker is null)
+		{
+			throw new InvalidOperationException(
+				"Tracker is not initialized. Generate tracker before accessing tracked events."
+			);
+		}
+
 		return tracker
 			.GetOutput()
 			.Where(e => e.Type == type)

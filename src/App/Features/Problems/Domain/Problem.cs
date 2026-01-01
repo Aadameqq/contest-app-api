@@ -10,4 +10,12 @@ public class Problem
 	public List<Tag> Tags { get; set; } = [];
 	public DateTime CreatedAt { get; set; }
 	public DateTime UpdatedAt { get; set; }
+
+	public static Problem CreateTestInstance(
+		string title = "Test Problem",
+		string slug = "test-problem"
+	)
+	{
+		return new Problem { Title = title, Slug = slug };
+	}
 }
