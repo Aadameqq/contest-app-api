@@ -20,7 +20,7 @@ public class TagsFeatureTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testFindShouldReturnTag()
+	public async Task TestFindShouldReturnTag()
 	{
 		using var scope = UseScope();
 		var task = scope.Service.Find(new FindTagInput(testTag.Slug));
@@ -32,7 +32,7 @@ public class TagsFeatureTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testFindShouldFailIfTagNotFound()
+	public async Task TestFindShouldFailIfTagNotFound()
 	{
 		using var scope = UseScope();
 
@@ -42,7 +42,7 @@ public class TagsFeatureTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testDeleteShouldRemoveTagWithGivenSlug()
+	public async Task TestDeleteShouldRemoveTagWithGivenSlug()
 	{
 		using var scope = UseScope();
 		await scope.Service.Delete(new FindTagInput(testTag.Slug));
@@ -53,7 +53,7 @@ public class TagsFeatureTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testDeleteShouldFailIfTagNotFound()
+	public async Task TestDeleteShouldFailIfTagNotFound()
 	{
 		using var scope = UseScope();
 		await Assert.ThrowsAsync<NoSuch>(() =>
@@ -62,7 +62,7 @@ public class TagsFeatureTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testUpdate()
+	public async Task TestUpdate()
 	{
 		var newTitle = "new-title";
 		using var scope = UseScope();
@@ -76,7 +76,7 @@ public class TagsFeatureTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testUpdateShouldFailIfTagNotFound()
+	public async Task TestUpdateShouldFailIfTagNotFound()
 	{
 		using var scope = UseScope();
 		await Assert.ThrowsAsync<NoSuch>(() =>
@@ -85,7 +85,7 @@ public class TagsFeatureTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testCreateShouldGenerateTag()
+	public async Task TestCreateShouldGenerateTag()
 	{
 		using var scope = UseScope();
 		var title = "New Tag";
@@ -102,7 +102,7 @@ public class TagsFeatureTests(TestWebApplicationFactory factory)
 	}
 
 	[Fact]
-	public async Task testListShouldReturnAllTags()
+	public async Task TestListShouldReturnAllTags()
 	{
 		using var scope = UseScope();
 		var other = await scope.Service.Create(new CreateTagInput("Another Tag"));

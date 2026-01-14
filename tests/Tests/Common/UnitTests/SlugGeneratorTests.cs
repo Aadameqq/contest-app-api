@@ -39,7 +39,7 @@ public class SlugGeneratorTests
 	[InlineData("123 Test Title", "123-test-title")]
 	[InlineData("Test  -  _  Title", "test-title")]
 	[InlineData("Hello World!", "hello-world")]
-	public async Task testGenerateShouldGenerateCorrectSlugs(
+	public async Task TestGenerateShouldGenerateCorrectSlugs(
 		string inputTitle,
 		string expectedSlug
 	)

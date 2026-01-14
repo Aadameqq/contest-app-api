@@ -1,4 +1,5 @@
 using App.Common.Infrastructure;
+using App.Common.Logic;
 using App.Common.Logic.Exceptions;
 using App.Common.Logic.Stubs;
 using App.Features.Problems.Domain;
@@ -19,6 +20,10 @@ public class ProblemsServiceTests
 	private readonly List<Problem> existingProblems =
 	[
 		new() { Title = "Existing Problem", Slug = "existing-problem" },
+		new() { Title = "Second Problem", Slug = "second-problem" },
+		new() { Title = "Third Problem", Slug = "third-problem" },
+		new() { Title = "Fourth Problem", Slug = "fourth-problem" },
+		new() { Title = "Fifth Problem", Slug = "fifth-problem" },
 	];
 
 	private readonly List<Tag> existingTags =
@@ -28,7 +33,7 @@ public class ProblemsServiceTests
 	];
 
 	[Fact]
-	public async Task testCreateShouldGenerateSlugAndCreateProblem()
+	public async Task TestCreateShouldGenerateSlugAndCreateProblem()
 	{
 		var algorithmTag = existingTags[0];
 		var title = "New Problem";
@@ -49,7 +54,7 @@ public class ProblemsServiceTests
 	}
 
 	[Fact]
-	public async Task testCreateShouldWorkWithEmptyTagsList()
+	public async Task TestCreateShouldWorkWithEmptyTagsList()
 	{
 		await Should.NotThrowAsync(async () =>
 		{
@@ -60,7 +65,7 @@ public class ProblemsServiceTests
 	}
 
 	[Fact]
-	public async Task testCreateShouldFailWhenTagNotFound()
+	public async Task TestCreateShouldFailWhenTagNotFound()
 	{
 		await Should.ThrowAsync<InvalidArgument>(async () =>
 		{
@@ -69,7 +74,7 @@ public class ProblemsServiceTests
 	}
 
 	[Fact]
-	public async Task testFindShouldReturnExistingProblem()
+	public async Task TestFindShouldReturnExistingProblem()
 	{
 		var existingProblem = existingProblems[0];
 
@@ -83,13 +88,13 @@ public class ProblemsServiceTests
 	}
 
 	[Fact]
-	public async Task testFindShouldFailIfProblemDoesNotExist()
+	public async Task TestFindShouldFailIfProblemDoesNotExist()
 	{
 		await Should.ThrowAsync<NoSuch>(() => RunFind("non-existent-problem"));
 	}
 
 	[Fact]
-	public async Task testUpdateShouldModifyExistingProblem()
+	public async Task TestUpdateShouldModifyExistingProblem()
 	{
 		var existingProblem = existingProblems[0];
 		var dataStructureTag = existingTags[1];
@@ -110,7 +115,7 @@ public class ProblemsServiceTests
 	}
 
 	[Fact]
-	public async Task testUpdateShouldFailIfProblemDoesNotExist()
+	public async Task TestUpdateShouldFailIfProblemDoesNotExist()
 	{
 		await Should.ThrowAsync<NoSuch>(async () =>
 		{
@@ -119,7 +124,7 @@ public class ProblemsServiceTests
 	}
 
 	[Fact]
-	public async Task testUpdateShouldFailWhenTagNotFound()
+	public async Task TestUpdateShouldFailWhenTagNotFound()
 	{
 		var existingProblem = existingProblems[0];
 
@@ -130,7 +135,7 @@ public class ProblemsServiceTests
 	}
 
 	[Fact]
-	public async Task testDeleteShouldRemoveExistingProblem()
+	public async Task TestDeleteShouldRemoveExistingProblem()
 	{
 		var existingProblem = existingProblems[0];
 
@@ -144,12 +149,52 @@ public class ProblemsServiceTests
 	}
 
 	[Fact]
-	public async Task testDeleteShouldFailIfProblemDoesNotExist()
+	public async Task TestDeleteShouldFailIfProblemDoesNotExist()
 	{
 		await Should.ThrowAsync<NoSuch>(async () =>
 		{
 			await RunDelete("non-existent-problem");
 		});
+	}
+
+	[Fact]
+	public async Task TestSearchShouldReturnPaginatedResults()
+	{
+		var result = await RunSearch(page: 1, perPage: 2);
+
+		result.Page.ShouldBe(1);
+		result.PerPage.ShouldBe(2);
+		result.Pages.ShouldBe(3);
+		result.NextPage.ShouldBe(2);
+	}
+
+	[Fact]
+	public async Task TestSearchShouldReturnCorrectPageOfResults()
+	{
+		var result = await RunSearch(page: 2, perPage: 2);
+
+		result.Payload.Count.ShouldBe(2);
+		result.Payload[0].ShouldBeEquivalentTo(existingProblems[2]);
+		result.Payload[1].ShouldBeEquivalentTo(existingProblems[3]);
+	}
+
+	[Fact]
+	public async Task TestSearchShouldHandleLastPartialPage()
+	{
+		var result = await RunSearch(page: 3, perPage: 2);
+
+		result.Payload.Count.ShouldBe(1);
+		result.NextPage.ShouldBe(null);
+		result.Payload[0].ShouldBeEquivalentTo(existingProblems[4]);
+	}
+
+	[Fact]
+	public async Task TestSearchShouldReturnEmptyResultsForPageBeyondTotal()
+	{
+		var result = await RunSearch(page: 10, perPage: 2);
+
+		result.Payload.Count.ShouldBe(0);
+		result.NextPage.ShouldBe(null);
 	}
 
 	private Task<Problem> RunCreate(
@@ -181,6 +226,12 @@ public class ProblemsServiceTests
 	{
 		var service = CreateServiceWithTracker();
 		return service.Delete(new FindProblemInput(slug));
+	}
+
+	private Task<Paginated<Problem>> RunSearch(int page, int? perPage = null)
+	{
+		var service = ProblemsService.CreateNull(existingProblems, existingTags);
+		return service.Search(new SearchProblemsInput(page, perPage));
 	}
 
 	private ProblemsService CreateServiceWithTracker()
