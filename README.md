@@ -39,5 +39,18 @@ Contest App is a modern web API built with .NET 8 that provides a platform for m
 
 "dev" keyword in commands indicates that it should NOT be run in production
 
+### Commit conventions:
+Use simple, clear commit messages in past tense:
+- `added X` - when adding new features or files
+- `fixed X` - when fixing bugs or issues
+- `updated X` - when modifying existing features
+- `removed X` - when deleting code or features
+- `refactored X` - when restructuring code without changing behavior
+
+Examples:
+- `added problems search endpoint`
+- `fixed tags repository null handling`
+- `updated auth middleware error messages`
+
 ## App quick start
 In progress...
