@@ -1,4 +1,5 @@
 using App.Common.Domain;
+using App.Common.Web;
 using App.Common.Web.Identity;
 using App.Features.Problems.Controllers.Requests;
 using App.Features.Problems.Domain;
@@ -19,6 +20,17 @@ public class ProblemsController(ProblemsService service) : ControllerBase
 		var input = new CreateProblemInput(req.Title, req.TagSlugs);
 		var problem = await service.Create(input);
 		return CreatedAtAction(nameof(Get), new { slug = problem.Slug }, null);
+	}
+
+	[HttpGet]
+	public async Task<PaginatedResponse<Problem>> Search(
+		[FromQuery] int? perPage,
+		[FromQuery] int page = 1
+	)
+	{
+		var input = new SearchProblemsInput(page, perPage);
+		var paginated = await service.Search(input);
+		return PaginatedResponse<Problem>.OfPaginated(paginated);
 	}
 
 	[HttpGet("{slug}")]
