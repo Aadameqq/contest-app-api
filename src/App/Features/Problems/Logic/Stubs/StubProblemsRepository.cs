@@ -1,3 +1,4 @@
+using App.Common.Logic;
 using App.Features.Problems.Domain;
 using App.Features.Problems.Logic.Ports;
 using App.Features.Tags.Logic;
@@ -29,6 +30,13 @@ public class StubProblemsRepository : ProblemsRepository
 	public Task<List<Problem>> ListAll()
 	{
 		return Task.FromResult(problems.ToList());
+	}
+
+	public Task<Paginated<Problem>> Search(Pagination pagination)
+	{
+		var payload = problems.Skip(pagination.Offset).Take(pagination.Limit).ToList();
+		var totalCount = problems.Count;
+		return Task.FromResult(pagination.AsPaginated(totalCount, payload));
 	}
 
 	public Task Create(Problem problem)

@@ -19,7 +19,7 @@ public class TagsServiceTests
 	];
 
 	[Fact]
-	public async Task testCreateShouldGenerateUniqueSlugAndCreateTag()
+	public async Task TestCreateShouldGenerateUniqueSlugAndCreateTag()
 	{
 		var existingTitle = existingTags[0].Title;
 
@@ -36,7 +36,7 @@ public class TagsServiceTests
 	}
 
 	[Fact]
-	public async Task testFindShouldReturnExistingTag()
+	public async Task TestFindShouldReturnExistingTag()
 	{
 		var tag = existingTags[0];
 
@@ -49,13 +49,13 @@ public class TagsServiceTests
 	}
 
 	[Fact]
-	public async Task testFindShouldFailIfTaskDoesNotExist()
+	public async Task TestFindShouldFailIfTaskDoesNotExist()
 	{
 		await Should.ThrowAsync<NoSuch>(() => RunFind("non-existent-tag"));
 	}
 
 	[Fact]
-	public async Task testDeleteShouldRemoveExistingTag()
+	public async Task TestDeleteShouldRemoveExistingTag()
 	{
 		var tag = existingTags[0];
 
@@ -69,7 +69,7 @@ public class TagsServiceTests
 	}
 
 	[Fact]
-	public async Task testDeleteShouldFailIfTagDoesNotExist()
+	public async Task TestDeleteShouldFailIfTagDoesNotExist()
 	{
 		await Should.ThrowAsync<NoSuch>(async () =>
 		{
@@ -78,7 +78,7 @@ public class TagsServiceTests
 	}
 
 	[Fact]
-	public async Task testUpdateShouldModifyExistingTag()
+	public async Task TestUpdateShouldModifyExistingTag()
 	{
 		var slug = existingTags[0].Slug;
 		var newTitle = "Updated Tag Title";
@@ -95,7 +95,7 @@ public class TagsServiceTests
 	}
 
 	[Fact]
-	public async Task testUpdateShouldFailIfTagDoesNotExist()
+	public async Task TestUpdateShouldFailIfTagDoesNotExist()
 	{
 		await Should.ThrowAsync<NoSuch>(async () =>
 		{

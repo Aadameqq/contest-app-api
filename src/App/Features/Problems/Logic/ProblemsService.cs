@@ -20,6 +20,8 @@ public class ProblemsService(
 	UnitOfWork uow
 ) : Service
 {
+	public const int DEFAULT_PER_PAGE = 20;
+
 	public static ProblemsService CreateNull(
 		List<Problem>? existingProblems = null,
 		List<Tag>? existingTags = null
@@ -111,5 +113,11 @@ public class ProblemsService(
 
 		await problemsRepository.Delete(found);
 		await uow.SaveChangesAsync();
+	}
+
+	public async Task<Paginated<Problem>> Search(SearchProblemsInput input)
+	{
+		var pagination = new Pagination(input.Page, input.PerPage ?? DEFAULT_PER_PAGE);
+		return await problemsRepository.Search(pagination);
 	}
 }
