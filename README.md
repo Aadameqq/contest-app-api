@@ -53,4 +53,21 @@ Examples:
 - `updated auth middleware error messages`
 
 ## App quick start
-In progress...
+
+Want to quickly run the API without setting up local development environment? Use the sandbox:
+
+```bash
+npm run start:sandbox
+```
+
+This single command will:
+- Start PostgreSQL database
+- Build and run the API
+- Apply all database migrations automatically
+- Expose API on `http://localhost:8080`
+- Serve OpenAPI docs at `http://localhost:8080/docs`
+
+### Sandbox commands:
+- `npm run start:sandbox` - Start the sandbox (uses cached Docker image)
+- `npm run rebuild:sandbox` - Rebuild and start (use after code changes)
+

@@ -6,6 +6,17 @@ public static class OptionsConfiguration
 {
 	public static void SetUpOptions(this WebApplicationBuilder builder)
 	{
+		var customAppsettings = Environment.GetEnvironmentVariable("CUSTOM_APPSETTINGS");
+
+		if (!string.IsNullOrEmpty(customAppsettings))
+		{
+			builder.Configuration.AddJsonFile(
+				$"appsettings.{customAppsettings}.json",
+				optional: false,
+				reloadOnChange: true
+			);
+		}
+
 		builder.Configuration.AddEnvironmentVariables();
 		builder.Configuration.AddUserSecrets<Program>();
 

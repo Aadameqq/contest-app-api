@@ -8,6 +8,8 @@
     "test": "dotnet test",
     "start:services:dev": "docker compose -f docker-compose.dev.yml up database",
     "start:dev": "dotnet watch --project ./src/App/App.csproj --non-interactive",
+    "start:sandbox": "docker compose -f docker-compose.dev.yml --profile sandbox up",
+    "rebuild:sandbox": "docker compose -f docker-compose.dev.yml --profile sandbox up --build",
     "create:migration": "node ./scripts/create-migration.js",
     "push:migration": "dotnet ef database update",
     "remove:migration:dev": "dotnet ef migrations remove --force"

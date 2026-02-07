@@ -9,5 +9,30 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testUser -d contest-app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  sandbox:
+    profiles: ["sandbox"]
+    build:
+      context: .
+      target: sandbox
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CUSTOM_APPSETTINGS=Sandbox
+      - Database__ConnectionString=Host=database;Database=contest-app;Username=testUser;Password=testPassword
+    volumes:
+      - ./scripts/sandbox-entrypoint.sh:/home/app/sandbox-entrypoint.sh:ro
+    entrypoint: ["bash", "/home/app/sandbox-entrypoint.sh"]
+    command: ["dotnet", "/home/app/app/App.dll"]
+    depends_on:
+      database:
+        condition: service_healthy
+
 volumes:
   postgres-data:
